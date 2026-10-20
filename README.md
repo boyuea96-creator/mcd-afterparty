@@ -149,6 +149,18 @@ mcd-afterparty/
 └── demo/snap/              # 三份真实运行结果（JSON 原始数据）
 ```
 
+### 改了之后怎么发
+
+`skill/` 是发布副本，日常编辑的是开发环境里的工作副本，两份不会自动同步。改完跑两条：
+
+```bash
+python3 tools/sync_skill.py     # 工作副本 → skill/（顺带把个人住址门牌脱敏）
+python3 tools/build_demo.py     # 若换了快照，重建根目录 index.html
+git add -A && git commit -m "..." && git push
+```
+
+仓库里装了 pre-commit 钩子，只改了一边就提交会被拦下并提示。`tools/sync_skill.py --check` 可单独自查。
+
 ## 数据来源与口径
 
 | 什么 | 从哪来 | 口径 |
