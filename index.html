@@ -431,7 +431,7 @@ input{font:inherit;color:inherit;background:none;border:0;outline:0}
         <input class="inp" id="drop" placeholder="如：飞虹路208号 奥体中心希尔顿欢朋">
         <button type="button" class="mini" id="dropRead">从 App 读取</button>
       </div>
-      <div class="chip-note" id="dropNote">如：汉庭优佳·万达店　·　<b>外卖只认 App 里存过的地址</b>，手打的不算，点右边「从 App 读取」挑一个</div>
+      <div class="chip-note" id="dropNote"><b>外卖只认 App 里存过的地址</b>，手打的不算，点右边「从 App 读取」挑一个</div>
     </div>
 
     <div class="field">
@@ -440,7 +440,7 @@ input{font:inherit;color:inherit;background:none;border:0;outline:0}
         <input class="inp" id="when" placeholder="如：2026-10-24 21:15">
         <button type="button" class="mini" id="whenNow">用此刻</button>
       </div>
-      <div class="chip-note" id="whenNote">如：2026-10-19 21:30　<span class="auto" id="whenCal"></span></div>
+      <div class="chip-note" id="whenNote">写全日期加时间　<span class="auto" id="whenCal"></span></div>
     </div>
 
     <div class="field">
@@ -708,7 +708,7 @@ function updWhen(){
   var v = $('when').value.trim();
   var el = $('whenCal');
   var m = v.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
-  if(!m){ el.textContent = v ? '· 缺日期，写成 2026-10-19 21:30' : ''; state.wk = ''; return; }
+  if(!m){ el.textContent = v ? '· 缺日期，写成 2026-10-24 21:15' : ''; state.wk = ''; return; }
   var d = new Date(+m[1], +m[2] - 1, +m[3]);
   var t = v.match(/(\d{1,2}:\d{2})/);
   state.wk = '周' + '日一二三四五六'.charAt(d.getDay());
