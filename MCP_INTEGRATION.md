@@ -138,8 +138,8 @@
 ## 六、复现
 
 ```bash
-git clone https://github.com/boyuea96-creator/AfterM.git
-cd AfterM/app
+git clone https://github.com/boyuea96-creator/mcd-afterparty.git
+cd mcd-afterparty/app
 export MCD_MCP_TOKEN=你的token      # 从 https://open.mcd.cn/mcp 领取
 python3 server.py                   # 打开 http://127.0.0.1:8765
 ```

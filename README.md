@@ -11,7 +11,7 @@
 
 ## 在线看（不需要任何 Token）
 
-👉 **<https://boyuea96-creator.github.io/AfterM/>**
+👉 **<https://boyuea96-creator.github.io/mcd-afterparty/>**
 
 这是**三份真实运行的录像**，不是我 P 出来的截图：真门店、真价格、真耗时，用真实账号跑完后原样回放。
 
@@ -60,8 +60,8 @@ AfterM 把这些一次性算完，然后**只给结论**：一句话说清这顿
 ### 2. 起服务
 
 ```bash
-git clone https://github.com/boyuea96-creator/AfterM.git
-cd AfterM/app
+git clone https://github.com/boyuea96-creator/mcd-afterparty.git
+cd mcd-afterparty/app
 python3 server.py            # 或者双击「启动.command」/「启动.bat」
 ```
 
@@ -132,7 +132,7 @@ mkdir -p ~/.workbuddy
 ## 目录结构
 
 ```
-AfterM/
+mcd-afterparty/
 ├── index.html              # 在线演示页（零 key，三份真实快照回放）
 ├── skill/                  # 参赛主体：给 AI Agent 用的 Skill
 │   ├── SKILL.md            #   完整玩法：输入规范、分流规则、输出骨架、着重点判定

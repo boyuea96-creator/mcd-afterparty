@@ -124,7 +124,7 @@ http://127.0.0.1:8765/?from=…&to=…&people=3&form=undecided&go=1
 ## 和 skill 的关系
 
 这个程序是**决策体系的可执行版本**。逻辑跑通、边界摸清之后，再把这些规则写回  
-`.workbuddy/skills/AfterM/SKILL.md`，让 WorkBuddy 里说一句「麦麦散场局」就能触发。
+`.workbuddy/skills/mcd-afterparty/SKILL.md`，让 WorkBuddy 里说一句「麦麦散场局」就能触发。
 
 程序先做，是因为有些事只有真跑才知道 —— 比如「最近的店可能点不出餐」这种，  
 光看接口文档写不出来。
