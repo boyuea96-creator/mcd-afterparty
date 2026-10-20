@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfterM · 麦麦散场局</title>
+<style>
+:root{
+  --bg:#0A0A0B; --card:#131315; --card2:#17171A; --line:#232326; --line2:#2E2E32;
+  --tx:#F5F5F7; --tx2:#9A9AA0; --tx3:#6B6B72;
+  --y:#FFC72C; --y-dim:rgba(255,199,44,.14);
+  --red:#DA291C; --red-lt:#F0715F; --red-dim:rgba(218,41,28,.13);
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
+  line-height:1.6; letter-spacing:.1px;
+}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit;color:inherit;background:none;border:0;outline:0}
+::selection{background:var(--y);color:#000}
+
+.screen{max-width:760px;margin:0 auto;padding:0 30px 80px}
+
+/* ---------- 第一屏 ---------- */
+.hero{
+  position:relative;overflow:hidden;padding:44px 0 54px;
+  background:linear-gradient(180deg,#DA291C 0%,#D32619 62%,#C42218 100%);
+}
+/* 红块下沿金线：两端淡出、中间略亮 —— 一条实心黄条会像贴纸，收口要有呼吸 */
+.hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:4px;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(255,199,44,.34) 0%, rgba(255,199,44,.70) 14%,
+    #FFC72C 38%, #FFE08A 50%, #FFC72C 62%,
+    rgba(255,199,44,.70) 86%, rgba(255,199,44,.34) 100%);
+  background:linear-gradient(90deg,
+    rgba(255,199,44,0) 0%, rgba(255,199,44,.58) 10%,
+    #FFC72C 34%, #FFE08A 50%, #FFC72C 66%,
+    rgba(255,199,44,.58) 90%, rgba(255,199,44,0) 100%);
+}
+.hero-in{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 30px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand .arch{width:40px;height:auto;display:block}
+.brand .bn{font-size:17px;font-weight:700;letter-spacing:.4px;line-height:1.1;color:#fff}
+.brand .bs{font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:2.2px;margin-top:3px}
+.h1{font-size:46px;line-height:1.18;font-weight:700;letter-spacing:-1.2px;margin:44px 0 16px;color:#fff}
+.h1 em{font-style:normal;color:var(--y)}
+.sub{font-size:15.5px;color:rgba(255,255,255,.74);margin:0}
+.formwrap{padding-top:46px}
+
+.sec-label{
+  font-size:11.5px;font-weight:700;letter-spacing:2.4px;color:var(--tx3);
+  text-transform:uppercase;margin:0 0 20px;display:flex;align-items:center;gap:10px;
+}
+.sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.sec-label span{letter-spacing:0;text-transform:none;font-weight:400;color:var(--tx3);font-size:11.5px}
+.sel-sec{margin-top:44px}
+
+.field{padding:0 0 22px}
+.field>label{display:block;font-size:12.5px;color:var(--tx3);margin-bottom:9px;letter-spacing:.3px}
+.field .row{display:flex;align-items:center;gap:14px}
+.inp{
+  flex:1;min-width:0;width:100%;font-size:19px;font-weight:500;padding:6px 0 11px;
+  border-bottom:1px solid var(--line2);transition:border-color .2s;
+}
+.inp::placeholder{color:#4A4A50;font-weight:400}
+.inp:focus{border-bottom-color:var(--y)}
+.mini{
+  font-size:12.5px;color:var(--tx2);border:1px solid var(--line2);border-radius:999px;
+  padding:6px 13px;white-space:nowrap;transition:.18s;
+}
+.mini:hover{color:var(--tx);border-color:#4A4A50}
+
+.stepper{display:flex;align-items:center;gap:2px}
+.stepper button{
+  width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+  font-size:20px;color:var(--tx2);transition:.16s;
+}
+.stepper button:hover{color:var(--tx);border-color:#3A3A40}
+.stepper .num{min-width:64px;text-align:center;font-size:26px;font-weight:600;letter-spacing:-.5px}
+.stepper .unit{color:var(--tx3);font-size:13px;margin-left:6px}
+
+.seg3{display:flex;gap:10px}
+.seg{
+  flex:1;padding:15px 0;border-radius:var(--r);background:var(--card);border:1px solid var(--line);
+  font-size:15.5px;font-weight:600;color:var(--tx2);transition:.18s;text-align:center;
+}
+.seg:hover{border-color:#3A3A40;color:var(--tx)}
+.seg.on{background:var(--y);border-color:var(--y);color:#141000;box-shadow:0 6px 24px rgba(255,199,44,.18)}
+.seg small{display:block;font-size:11px;font-weight:500;opacity:.62;margin-top:2px;letter-spacing:.3px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.chip{
+  padding:8px 15px;border-radius:999px;border:1px solid var(--line2);
+  font-size:13.5px;color:var(--tx2);transition:.16s;background:transparent;
+}
+.chip:hover{border-color:#454549;color:var(--tx)}
+.chip.on{background:var(--y-dim);border-color:rgba(255,199,44,.6);color:var(--y)}
+.chip:disabled{opacity:.28;cursor:not-allowed}
+.chip-note{font-size:11.5px;color:var(--tx3);margin-top:9px;line-height:1.7}.chip-note .auto{color:var(--y);opacity:.9}
+.lab-note{font-size:11px;color:#6A6A72;font-weight:400;margin-left:9px;letter-spacing:0}
+
+/* 必填没填够：一次说清缺哪几项，不玩「请填写完整」 */
+.formerr{margin:4px 0 18px;padding:15px 17px;border-radius:10px;
+  border:1px solid rgba(218,41,28,.34);background:rgba(218,41,28,.05);
+  font-size:13px;line-height:1.9;color:#DCA79F}
+.formerr b{display:block;font-size:13.5px;color:#F0715F;margin-bottom:5px}
+.formerr span{display:inline-block;margin-right:16px;cursor:pointer;
+  border-bottom:1px dashed rgba(240,113,95,.55);padding-bottom:1px}
+.inp.err,.price-inp.err{border-color:rgba(218,41,28,.62)!important}
+
+/* 偏好兑现条：不用色块，只用一根左边线，低调但绕不开 */
+.prefwrap{margin:0 0 24px}
+.pf{display:flex;align-items:baseline;gap:12px;padding:13px 0 13px 14px;
+  border-left:2px solid var(--line2);margin-bottom:2px}
+.pf b{font-size:14px;font-weight:600;white-space:nowrap}
+.pf span{font-size:12px;color:var(--tx3);line-height:1.6}
+.pf.ok{border-left-color:var(--y)}
+.pf.ok b{color:var(--y)}
+.pf.miss{border-left-color:rgba(218,41,28,.75)}
+.pf.miss b{color:#F0715F}
+.pf.warn{border-left-color:rgba(218,41,28,.45)}
+.pf.warn b{color:#E7A79E}
+
+.quick{display:flex;gap:8px;margin-left:auto}
+.quick button{
+  padding:8px 15px;border-radius:999px;border:1px solid var(--line2);
+  font-size:13.5px;color:var(--tx2);transition:.16s;background:transparent;
+}
+.quick button:hover{border-color:#454549;color:var(--tx)}
+.quick button.on{background:var(--y-dim);border-color:rgba(255,199,44,.6);color:var(--y)}
+.price-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.price-inp{width:120px;font-size:19px;font-weight:600;padding:6px 0 10px;border-bottom:1px solid var(--line2)}
+.price-row .unit{color:var(--tx3);font-size:13px;margin-left:-6px}
+
+.cta{
+  width:100%;margin-top:38px;padding:19px 0;border-radius:16px;
+  background:var(--y);color:#141000;font-size:17px;font-weight:700;letter-spacing:.5px;
+  transition:.18s;box-shadow:0 10px 34px rgba(255,199,44,.16);
+}
+.cta:hover{background:#FFD453;transform:translateY(-1px)}
+.cta:active{transform:translateY(0)}
+.cta[disabled]{opacity:.55;cursor:progress;transform:none}
+.form-foot{text-align:center;font-size:11.5px;color:var(--tx3);margin-top:16px}
+
+/* ---------- 计算中 ---------- */
+.loading{padding:100px 0;text-align:center}
+.ld-num{font-size:52px;font-weight:800;letter-spacing:-2px;color:var(--y);font-variant-numeric:tabular-nums}
+.ld-num small{font-size:15px;font-weight:500;color:var(--tx3);margin-left:6px;letter-spacing:0}
+.ld-bar{width:220px;height:3px;background:var(--line);border-radius:2px;margin:26px auto 0;overflow:hidden}
+.ld-bar i{display:block;height:100%;width:30%;background:var(--y);border-radius:2px;
+  animation:sweep 1.1s ease-in-out infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(430%)}}
+.ld-tip{margin-top:24px;font-size:13.5px;color:var(--tx2);min-height:22px}
+.ld-sub{margin-top:8px;font-size:11.5px;color:var(--tx3)}
+
+/* ---------- 第二屏 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;
+  padding:16px 0;margin-bottom:2px;background:rgba(10,10,11,.86);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line);
+}
+.back{font-size:13.5px;color:var(--tx2);transition:.16s;white-space:nowrap}
+.back:hover{color:var(--y)}
+.sumchips{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
+.sumchip{font-size:11.5px;color:var(--tx3);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+
+.lazybar{display:flex;align-items:baseline;gap:9px;margin:26px 0 0;font-size:12.5px;color:var(--tx3)}
+.lazybar b{color:var(--tx2);font-weight:600}
+.lb-dash{width:14px;height:1px;background:var(--y);display:inline-block;flex:none;transform:translateY(-4px)}
+
+.vcard{
+  position:relative;margin:16px 0 4px;padding:22px 28px 26px;border-radius:18px;overflow:hidden;
+  background:radial-gradient(130% 120% at 100% 0%,rgba(255,199,44,.10) 0%,rgba(255,199,44,0) 58%),
+             linear-gradient(158deg,#171308 0%,#121110 46%,#0E0E0F 100%);
+  border:1px solid #2B2620;
+  box-shadow:0 18px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.vcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(180deg,var(--y) 0%,var(--y) 46%,var(--red) 100%)}
+.vwm{position:absolute;right:-30px;bottom:-38px;width:196px;opacity:.06;pointer-events:none}
+.vlabel{display:inline-flex;align-items:center;gap:7px;position:relative;z-index:1;
+  background:var(--red);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:2.2px;
+  padding:5px 11px;border-radius:3px}
+.vlabel::before{content:"";width:4px;height:4px;border-radius:50%;background:#fff;opacity:.9}
+
+.verdict{position:relative;z-index:1;padding-top:18px}
+.verdict .vt{font-size:33px;line-height:1.34;font-weight:800;letter-spacing:-.9px;margin:0;color:#FAFAFB}
+.verdict .vt .em{
+  font-weight:800;letter-spacing:1.5px;
+  background:linear-gradient(96deg,#FFF3CE 0%,#FFC72C 50%,#FFA81A 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(255,199,44,.38));
+}
+.verdict .vmeta{display:flex;align-items:baseline;gap:14px;margin-top:20px;
+  padding-top:18px;border-top:1px solid rgba(255,199,44,.14)}
+.verdict .vprice{font-size:31px;font-weight:800;letter-spacing:-1px;color:var(--y);
+  font-variant-numeric:tabular-nums;line-height:1}
+.verdict .vper{font-size:13px;color:var(--tx3)}
+.verdict .vper b{color:var(--tx2);font-weight:500}
+.verdict .vtags{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.verdict .vtags span{font-size:12px;color:var(--tx2);border:1px solid #2C2823;border-radius:999px;
+  padding:4px 11px;background:rgba(255,255,255,.02)}
+.verdict .vtags span.hot{color:var(--red-lt);border-color:rgba(218,41,28,.32);background:rgba(218,41,28,.09)}
+.verdict .vtags span.gap{color:var(--red-lt);border-color:rgba(218,41,28,.3);background:rgba(218,41,28,.08)}
+.verdict .vs{font-size:14.5px;color:var(--tx2);margin:16px 0 0}
+.verdict .vlead{font-size:19px;font-weight:700;letter-spacing:-.3px;line-height:1.6;color:var(--tx);
+  margin:0 0 4px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.verdict .vlead .dgap{color:var(--red-lt);font-weight:800}
+.verdict .vrow{display:grid;grid-template-columns:58px 1fr auto;gap:14px;align-items:start;
+  padding:15px 0;border-top:1px solid rgba(255,255,255,.055)}
+.verdict .vrow:first-child{border-top:0;padding-top:4px}
+.verdict .vrow .k{font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--tx2);
+  border-left:3px solid var(--y);padding:2px 0 2px 9px;line-height:1.5}
+.verdict .vrow .v{font-size:15px;color:var(--tx2);line-height:1.7}
+.verdict .vrow .vp{font-size:19px;font-weight:800;color:var(--y);white-space:nowrap;
+  font-variant-numeric:tabular-nums;line-height:1.35;text-align:right}
+.verdict .vrow .vp small{font-size:11px;font-weight:400;color:var(--tx3);margin-left:2px}
+
+.switch{display:flex;gap:8px;margin:24px 0 4px}
+.switch button{
+  flex:1;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  font-size:14.5px;font-weight:600;color:var(--tx2);transition:.18s;text-align:left;
+}
+.switch button .sp{float:right;font-size:12.5px;font-weight:500;color:var(--tx3);padding-top:2px}
+.switch button.on{border-color:rgba(255,199,44,.55);background:var(--y-dim);color:var(--y)}
+.switch button.on .sp{color:rgba(255,199,44,.75)}
+
+.block{margin-top:34px}
+.bh{display:flex;align-items:baseline;gap:9px;margin-bottom:15px}
+.bh .idx{font-size:11px;color:var(--tx3);letter-spacing:1.6px;font-weight:700}
+.bh .bt{font-size:15.5px;font-weight:700;letter-spacing:.2px}
+.bh .bj{font-size:11.5px;color:var(--tx3);margin-left:auto;text-align:right}
+
+.coupon{display:flex;gap:13px;align-items:flex-start;padding:15px 17px;border-radius:12px;
+  background:var(--card);border:1px solid var(--line)}
+.coupon .ci{flex:none;width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,199,44,.42);
+  color:var(--y);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.coupon .ct{font-size:13.5px;color:var(--tx2);line-height:1.66}
+.coupon .ct b{color:var(--tx);font-weight:600}
+.coupon .ct .dim{color:var(--tx3);font-size:12.5px}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11px;font-weight:600;letter-spacing:1.2px;color:var(--tx3);
+  padding:0 0 10px;border-bottom:1px solid var(--line)}
+.tbl th.r,.tbl td.r{text-align:right}
+.tbl th.tg{padding-left:24px;min-width:96px}
+.tbl th.r{min-width:96px}
+.tbl td{padding:15px 0;border-bottom:1px solid #1A1A1D;vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.nm{font-size:14.5px;font-weight:600;color:var(--tx);padding-right:14px}
+.tbl td.nm .sub2{display:block;font-size:12px;font-weight:400;color:var(--tx3);margin-top:4px;line-height:1.55}
+.tbl td.pr{font-size:16px;font-weight:700;white-space:nowrap;padding-left:12px}
+.tbl td.pr .pp{display:block;font-size:11.5px;font-weight:400;color:var(--tx3);margin-top:3px}
+.tbl td.tg{padding-left:16px;width:104px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;margin:0 4px 4px 0;white-space:nowrap}
+.t-best{background:var(--y-dim);color:var(--y);border:1px solid rgba(255,199,44,.32)}
+.t-gray{background:#1D1D20;color:var(--tx3);border:1px solid #2C2C31}
+.t-hot{background:rgba(218,41,28,.14);color:#F0715F;border:1px solid rgba(218,41,28,.32)}
+
+.ways{margin-top:2px}
+.whead{font-size:12.5px;color:var(--tx3);padding-bottom:12px;border-bottom:1px solid var(--line)}
+.whead b{color:var(--tx);font-weight:600}
+.wrow{display:grid;grid-template-columns:1fr 62px 96px;gap:14px;align-items:baseline;
+  padding:13px 0;border-bottom:1px solid #1A1A1D}
+.wrow:last-of-type{border-bottom:0}
+.wrow .wn{font-size:14px;font-weight:600;color:var(--tx);line-height:1.4}
+.wrow .wn small{display:block;font-weight:400;font-size:11.5px;color:var(--tx3);margin-top:5px;line-height:1.5}
+.wrow .wt{font-size:14px;color:var(--tx2);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.wrow .wc{font-size:13.5px;color:var(--tx2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wrow .wn .tag{margin-left:8px;vertical-align:1px}
+.wrow.best .wt{color:var(--tx);font-weight:700}
+.wrow.best .wc{color:var(--y)}
+.waynote{margin-top:13px;font-size:11.5px;color:var(--tx3);line-height:1.6}
+.waynote b{color:var(--tx2);font-weight:500}
+
+.transit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tcard{padding:15px 17px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.tcard .tt{font-size:11.5px;color:var(--tx3);letter-spacing:.6px;margin-bottom:8px}
+.tcard .tv{font-size:19px;font-weight:700}
+.tcard .tv small{font-size:12px;font-weight:400;color:var(--tx3);margin-left:5px}
+.tcard .td{font-size:12px;color:var(--tx3);margin-top:6px;line-height:1.5}
+
+.close{margin-top:34px;padding:20px 22px;border-radius:14px;
+  background:linear-gradient(180deg,#17140A,#111110);border:1px solid rgba(255,199,44,.22)}
+.close .cl{font-size:12px;color:var(--tx3);letter-spacing:1.4px;margin-bottom:8px}
+.close .cm{font-size:15px;color:var(--tx);line-height:1.7}
+.close .cm b{font-size:22px;color:var(--y);letter-spacing:-.3px}
+.close .cd{font-size:12.5px;color:var(--tx3);margin-top:10px;line-height:1.6}
+.member{margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.06);
+  font-size:12.5px;color:var(--tx2);line-height:1.65}
+.member b{color:var(--tx);font-weight:600}
+.member .yes{color:var(--y);font-weight:700}
+.member .no{color:var(--red-lt);font-weight:700}
+
+.card{margin-top:34px;padding:22px 24px;border-radius:16px;background:#0F0F11;border:1px dashed #34343A}
+.card .ch{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx3);letter-spacing:1.6px;margin-bottom:14px}
+.card ol{margin:0;padding-left:19px;font-size:14.5px;line-height:2}
+.card ol li::marker{color:var(--tx3);font-size:12px}
+.card .cf{margin-top:14px;padding-top:12px;border-top:1px solid #1E1E22;font-size:11.5px;color:var(--tx3)}
+
+.relation-note{margin-top:16px;font-size:13px;color:var(--tx2);line-height:1.7;
+  padding:13px 16px;border-radius:10px;background:#131315;border:1px solid var(--line)}
+.relation-note b{color:var(--tx);font-weight:600}
+
+.warn{margin-top:20px;padding:13px 16px;border-radius:10px;font-size:12.5px;line-height:1.7;
+  background:var(--red-dim);border:1px solid rgba(218,41,28,.28);color:#E7A79E}
+.warn b{color:#F0715F}
+
+/* 「还没定」但另一套走不通时的说明：不置灰、不喊口号，只把原因摊开 */
+.deadline{margin-top:22px;padding:15px 17px;border-radius:12px;
+  background:#111113;border:1px solid var(--line2);line-height:1.75;font-size:12.5px}
+.deadline b{display:block;font-size:13.5px;color:var(--tx);font-weight:600;margin-bottom:5px}
+.deadline span{display:block;color:#B9B9BF}
+.deadline i{display:block;margin-top:8px;font-style:normal;color:var(--tx3);font-size:11.5px}
+
+.foot{margin-top:56px;font-size:11px;color:#4E4E54;line-height:1.9;border-top:1px solid var(--line);padding-top:20px}
+.foot b{color:var(--tx3);font-weight:500}
+.foot .met{color:var(--y);font-variant-numeric:tabular-nums}
+
+@media(max-width:640px){
+  .screen{padding:0 20px 60px}
+  .hero{padding:30px 0 40px}
+  .hero-in{padding:0 20px}
+  .h1{font-size:34px;margin:34px 0 12px}
+  .formwrap{padding-top:34px}
+  .verdict .vt{font-size:23px}
+  .transit{grid-template-columns:1fr}
+  .tbl td.tg{display:none}
+  .seg small{display:none}
+  .wrow{grid-template-columns:1fr 52px 78px;gap:10px}
+}
+</style>
+<style>
+/* ===== 演示模式（只在 demo/index.html 里注入） ===== */
+/* 表单不参与演示：填了也不会重算，留着只会骗人。内部仍用它的值传参。 */
+.formwrap #form{display:none}
+
+.demo{margin:0 0 26px;padding:17px 20px 19px;border-radius:14px;background:#111113;
+  border:1px solid #232326;border-left:3px solid var(--gold,#FFC72C)}
+@media(max-width:520px){.demo{padding:15px 15px 16px}}
+.demo-hd{font-size:12.5px;line-height:1.75;color:#B9B9C0}
+.demo-hd b{color:#EDEDF0;font-weight:600}
+.demo-tag{display:inline-block;padding:1px 7px;margin-right:8px;border-radius:4px;
+  background:rgba(255,199,44,.14);color:#FFC72C;font-size:11px;font-weight:700;
+  letter-spacing:1.2px;vertical-align:1px}
+
+/* 显式 minmax(0,1fr)：默认 auto 列会被长串数字撑破，窄屏直接溢出 */
+.demo-sc{display:grid;gap:9px;margin-top:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:640px){.demo-sc{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.demo-sc a{position:relative;display:flex;flex-direction:column;min-width:0;
+  padding:14px 15px 15px;border-radius:11px;
+  border:1px solid #2A2A2F;background:#151517;text-decoration:none;transition:.15s}
+.demo-sc a:hover{border-color:#4A4A52;background:#191A1D}
+.demo-sc a.on{border-color:rgba(255,199,44,.5);background:rgba(255,199,44,.055)}
+.sc-id{display:inline-block;font-size:10px;letter-spacing:1.6px;font-weight:700;color:#71717A}
+.demo-sc a.on .sc-id{color:#FFC72C}
+.sc-row{display:flex;align-items:baseline;gap:7px;margin-top:7px}
+.sc-t{flex:1;min-width:0;font-size:14px;font-weight:700;color:#F2F2F4;line-height:1.45}
+.sc-c{display:block;margin-top:6px;font-size:11px;color:#7E7E88;line-height:1.5}
+.sc-w{display:block;margin-top:auto;padding-top:11px;border-top:1px solid #232327;
+  font-size:11.5px;color:#A6A6B0;line-height:1.65}
+.sc-c{margin-bottom:11px}
+.sc-go{flex:0 0 auto;font-size:12px;font-style:normal;color:#55555D;transition:.15s}
+.demo-sc a:hover .sc-go,.demo-sc a.on .sc-go{color:#FFC72C}
+
+.demo-ft{margin-top:14px;padding-top:13px;border-top:1px solid #1F1F22;
+  font-size:11.5px;line-height:1.8;color:#6C6C74}
+.demo-ft b{color:#9A9AA2;font-weight:400}
+
+/* 结果页顶部的小标：从链接直接进来的人，也得知道这是回放 */
+.demo-mini{display:flex;align-items:center;gap:7px;margin:16px 0 12px;
+  font-size:11.5px;color:#8E8E96;letter-spacing:.3px}
+.demo-mini i{width:5px;height:5px;border-radius:50%;flex:0 0 5px;
+  background:#FFC72C;box-shadow:0 0 7px rgba(255,199,44,.75)}
+.demo-mini b{color:#C9C9D0;font-weight:600}
+
+/* 认不出条件时的提示 */
+.demo-toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,12px);opacity:0;
+  padding:10px 18px;border-radius:999px;background:#1B1B1F;border:1px solid #33333B;
+  color:#E8E8EC;font-size:13px;z-index:99;pointer-events:none;transition:.22s;
+  box-shadow:0 8px 24px rgba(0,0,0,.45);max-width:88vw;text-align:center;line-height:1.5}
+.demo-toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- ==================== 第一屏：填信息 ==================== -->
+<main id="screen-form">
+
+<section class="hero">
+  <div class="hero-in">
+  <div class="brand">
+    <svg class="arch" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg" aria-label="金拱门">
+      <path d="M16 116 C16 34 32 16 60 16 C88 16 100 44 100 116 C100 44 112 16 140 16 C168 16 184 34 184 116"
+            fill="none" stroke="#FFC72C" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <div class="bn">AfterM</div>
+      <div class="bs">麦麦散场局</div>
+    </div>
+  </div>
+
+  <h1 class="h1">散场了，<br>这顿<em>怎么吃</em></h1>
+  <p class="sub">三个真实案例，点开看这笔账怎么算。</p>
+  </div>
+</section>
+
+<div class="screen formwrap">
+<div class="demo"><div class="demo-hd"><span class="demo-tag">演示</span><b>这不是在线服务，是 3 份真实运行的录像。</b>真门店、真价格、真耗时，我在本机跑完就原样存下来了。所以你<b>不用申请任何 Token</b>，但也没法拿它算你自己的地址。</div><div class="demo-sc"><a class="on" data-sid="A" href="?from=%E6%B5%99%E6%B1%9F%E7%9C%81%E6%9D%AD%E5%B7%9E%E5%B8%82%E6%BB%A8%E6%B1%9F%E5%8C%BA%E9%A3%9E%E8%99%B9%E8%B7%AF3%E5%8F%B7&to=%E6%B5%99%E6%B1%9F%E7%9C%81%E6%9D%AD%E5%B7%9E%E5%B8%82%E6%BB%A8%E6%B1%9F%E5%8C%BA%E9%A3%9E%E8%99%B9%E8%B7%AF208%E5%8F%B7&when=2026-10-24%2021%3A15&people=3&form=undecided&go=1"><span class="sc-id">场景 A</span><span class="sc-row"><b class="sc-t">演唱会散场，还没定</b><i class="sc-go">→</i></span><span class="sc-c">周六 · 21:15 · 3 人 · 杭州大莲花</span><span class="sc-w">堂食 / 外卖 两套账都给你</span></a><a data-sid="B" href="?from=%E6%B9%96%E5%8C%97%E7%9C%81%E6%AD%A6%E6%B1%89%E5%B8%82%E6%B1%9F%E6%B1%89%E5%8C%BA%E6%B1%9F%E6%B1%89%E8%B7%AF%E6%AD%A5%E8%A1%8C%E8%A1%97&to=%E6%B9%96%E5%8C%97%E7%9C%81%E6%AD%A6%E6%B1%89%E5%B8%82%E6%B1%9F%E5%B2%B8%E5%8C%BA%E9%BB%8E%E9%BB%84%E9%99%82%E8%B7%AF&when=2026-10-23%2022%3A30&people=4&form=dinein&taste=%E6%83%B3%E5%90%83%E9%BA%A6%E8%BE%A3%E9%B8%A1%E7%BF%85%20%2F%20%E6%9C%89%E4%BA%BA%E4%B8%8D%E5%90%83%E5%86%B0%E7%9A%84%E5%86%B7%E7%9A%84&go=1"><span class="sc-id">场景 B</span><span class="sc-row"><b class="sc-t">点名要吃麦辣鸡翅</b><i class="sc-go">→</i></span><span class="sc-c">周五 · 22:30 · 4 人 · 武汉江汉路</span><span class="sc-w">想要的排第一位　¥114 拿下</span></a><a data-sid="C" href="?from=%E4%B8%8A%E6%B5%B7%E5%B8%82%E6%B5%A6%E4%B8%9C%E6%96%B0%E5%8C%BA%E6%BB%A8%E6%B1%9F%E5%A4%A7%E9%81%932727%E5%8F%B7&to=%E4%B8%8A%E6%B5%B7%E5%B8%82%E6%B5%A6%E4%B8%9C%E6%96%B0%E5%8C%BA%E5%AF%8C%E5%9F%8E%E8%B7%AF33%E5%8F%B7&when=2026-10-22%2017%3A00&people=6&form=delivery&budget=30&go=1"><span class="sc-id">场景 C</span><span class="sc-row"><b class="sc-t">6 人外卖，人均 30</b><i class="sc-go">→</i></span><span class="sc-c">周四 · 17:00 · 6 人 · 上海陆家嘴</span><span class="sc-w">够不够，直接算给你看</span></a></div><div class="demo-ft">点一张卡 → 看那一份。三份条件都锁死了，改不了，也不会拿别的条件糊弄你。<br>价格是那一单的真实成交价（含打包费、运费，也给了人均）；换门店、换时段会变，以你 App 里为准。<br>想算你自己的地址和时间：<b>按 README 在本地跑一次，只要麦当劳 MCP Token，高德可选。</b></div></div>
+  <form id="form" autocomplete="off">
+
+    <div class="sec-label">必填</div>
+
+    <div class="field">
+      <label>当前地址<span class="lab-note">你现在在哪</span></label>
+      <div class="row">
+        <input class="inp" id="addr" placeholder="如：杭州市滨江区飞虹路3号（杭州奥体中心）">
+      </div>
+      <div class="chip-note">带上城市名和门牌号最准。系统会用它找最近的麦当劳。</div>
+    </div>
+
+    <div class="field">
+      <label>落脚点地址<span class="lab-note">外卖送到这 · 堂食吃完去这</span></label>
+      <div class="row">
+        <input class="inp" id="drop" placeholder="如：汉庭优佳·万达店">
+        <button type="button" class="mini" id="dropRead">从 App 读取</button>
+      </div>
+      <div class="chip-note" id="dropNote">如：汉庭优佳·万达店　·　<b>外卖只认 App 里存过的地址</b>，手打的不算，点右边「从 App 读取」挑一个</div>
+    </div>
+
+    <div class="field">
+      <label>散场时间</label>
+      <div class="row">
+        <input class="inp" id="when" placeholder="如：2026-10-19 21:30">
+        <button type="button" class="mini" id="whenNow">用此刻</button>
+      </div>
+      <div class="chip-note" id="whenNote">如：2026-10-19 21:30　<span class="auto" id="whenCal"></span></div>
+    </div>
+
+    <div class="field">
+      <label>人数</label>
+      <div class="stepper">
+        <button type="button" data-step="-1">−</button>
+        <div class="num" id="num">3</div>
+        <button type="button" data-step="1">+</button>
+        <span class="unit">人</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>怎么吃</label>
+      <div class="seg3" id="segForm">
+        <button type="button" class="seg on" data-val="dinein">堂食<small>就近坐下吃</small></button>
+        <button type="button" class="seg" data-val="delivery">外卖<small>送到落脚点</small></button>
+        <button type="button" class="seg" data-val="undecided">还没定<small>两套都算给你</small></button>
+      </div>
+    </div>
+
+    <div class="sel-sec">
+      <div class="sec-label">选填<span>补了，方案更准</span></div>
+
+      <div class="field">
+        <label>偏好 / 忌口<span class="lab-note">斜杠前＝想吃，斜杠后＝不能碰</span></label>
+        <input class="inp" id="taste" placeholder="如：想吃麦辣鸡翅 / 不想吃冰的冷的">
+        <div class="chip-note">也支持 控卡 / 素食 / 过敏原 / 儿童餐　·　写反了也没事，带「不 / 忌 / 过敏」的一律当忌口</div>
+      </div>
+
+      <div class="field">
+        <label>价格预期</label>
+        <div class="price-row">
+          <input class="price-inp" id="budget" placeholder="不限">
+          <span class="unit">元 / 人</span>
+          <div class="quick">
+            <button type="button" data-budget="30">30</button>
+            <button type="button" data-budget="40">40</button>
+            <button type="button" data-budget="50">50</button>
+            <button type="button" data-budget="">不限</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>人物关系</label>
+        <div class="chips" id="rel">
+          <button type="button" class="chip" data-val="恋人">恋人</button>
+          <button type="button" class="chip" data-val="同事">同事</button>
+          <button type="button" class="chip" data-val="一家三口">一家三口</button>
+          <button type="button" class="chip" data-val="同学">同学</button>
+          <button type="button" class="chip" data-val="朋友">朋友</button>
+        </div>
+        <input class="inp" id="relFree" placeholder="其他，直接写（如：我和我女朋友还有她闺蜜）"
+               style="margin-top:14px;font-size:15px;font-weight:400">
+        <div class="chip-note" id="relNote">不填按各吃各的算，不会替你猜</div>
+      </div>
+
+      <div class="field" style="padding-bottom:6px">
+        <label>疲劳度</label>
+        <div class="chips" id="tired">
+          <button type="button" class="chip" data-val="轻松">轻松</button>
+          <button type="button" class="chip on" data-val="适中">适中</button>
+          <button type="button" class="chip" data-val="疲劳">很累</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="formerr" id="fileErr" hidden></div>
+    <button class="cta" type="submit" id="submit">看方案</button>
+    <div class="form-foot">只读查询，不会下单、不会领券、不会动你的地址</div>
+  </form>
+</div>
+</main>
+
+<!-- ==================== 计算中 ==================== -->
+<main class="screen loading" id="screen-load" hidden>
+  <div class="ld-num" id="ldNum">0.0<small>秒</small></div>
+  <div class="ld-bar"><i></i></div>
+  <div class="ld-tip" id="ldTip">正在找最近的麦当劳…</div>
+  <div class="ld-sub">回放真实运行快照 · 约半秒出结果</div>
+</main>
+
+<!-- ==================== 第二屏：方案 ==================== -->
+<main class="screen" id="screen-result" hidden>
+<div class="demo-mini"><i></i><span id="demoMini">演示模式 · <b>场景 A</b> 的真实快照回放，未实时查价</span></div>
+
+  <div class="topbar">
+    <button class="back" id="back">← 换场景</button>
+    <div class="sumchips" id="sumchips"></div>
+  </div>
+
+  <div class="lazybar"><i class="lb-dash"></i><span id="lazyTxt">不想看长文？<b>只读下面这一句</b>就够点单了。</span></div>
+
+  <div class="vcard">
+    <svg class="vwm" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16 116 C16 34 32 16 60 16 C88 16 100 44 100 116 C100 44 112 16 140 16 C168 16 184 34 184 116"
+            fill="none" stroke="#FFC72C" stroke-width="16" stroke-linecap="round"/>
+    </svg>
+    <div class="vlabel" id="vlabel">本单结论</div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div class="switch" id="switch" hidden></div>
+
+  <div id="warnbox"></div>
+
+  <section id="pane-dinein" hidden></section>
+  <section id="pane-delivery" hidden></section>
+
+  <div class="foot" id="foot"></div>
+</main>
+
+<script>
+/* 演示模式：把真实运行快照喂给页面，不发起任何网络请求。 */
+window.__DEMO__ = true;
+window.__DEMO_SNAP__ = {"A":{"ok":true,"panes":{"dinein":{"ok":true,"store":{"code":"3330547","beCode":null,"name":"麦当劳杭州滨江区ONE聚场餐厅","address":"奥体中心站One聚场E出口","api_dist":26,"resv":[{"date":"2026-10-20","today":true,"reservationOptionText":"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"},{"date":"2026-10-21","today":false,"reservationOptionText":"早餐(07:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"}],"loc":"120.232358,30.224073","km":0.29,"walk_sec":321,"meals":{"9900005456":{"name":"麦辣鸡腿汉堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png","currentPrice":"33.5","originalPrice":"47","canWithOrder":false},"511781":{"name":"培根安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png","currentPrice":"34.5","originalPrice":"34.5","canWithOrder":false},"521908":{"name":"黑洋酥小圆子风味派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521908_320.png","currentPrice":"5","originalPrice":"9.5","discountType":"促销优惠","canWithOrder":false},"511782":{"name":"芝士安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png","currentPrice":"31.5","originalPrice":"31.5","canWithOrder":false},"521741":{"name":"脆薯饼","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521741_320.png","currentPrice":"8.5","originalPrice":"8.5","canWithOrder":false},"2430":{"name":"【美汁源】“黄金橙橙”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"521986":{"name":"马苏里拉拉丝芝士条","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png","currentPrice":"11","originalPrice":"16","discountType":"促销优惠","canWithOrder":false},"9900011056":{"name":"全明星双人分享餐八件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_9900011056_320.gif","currentPrice":"49.9","originalPrice":"118","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521901":{"name":"月下相思扭扭薯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521901_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900016078":{"name":"蘸酱麦麦脆汁鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900016079":{"name":"蘸酱脆皮鸡柳","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016079_320.png","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"9900016076":{"name":"“我就喜欢”鸡薯双全盒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png","currentPrice":"15.9","originalPrice":"30","canWithOrder":false},"9900016077":{"name":"蘸酱炸鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"9900016075":{"name":"龙焰芝士棒鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png","currentPrice":"29.9","originalPrice":"51.5","canWithOrder":false},"9900016073":{"name":"龙焰鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png","currentPrice":"26.9","originalPrice":"48.5","canWithOrder":false},"9900005460":{"name":"麦香鱼套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900005462":{"name":"板烧鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"3755":{"name":"纯牛奶(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png","currentPrice":"11","originalPrice":"11","canWithOrder":false},"9900005464":{"name":"双层吉士汉堡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900004236":{"name":"人气超值四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"3757":{"name":"纯悦","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_3757_320.png","currentPrice":"7.5","originalPrice":"7.5","canWithOrder":false},"9900005466":{"name":"巨无霸三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"6362":{"name":"100% 苹果汁(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"521917":{"name":"泷愿成真麦旋风——大米风味","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521917_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900005449":{"name":"吉士汉堡包套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png","currentPrice":"26","originalPrice":"39.5","canWithOrder":false},"3010":{"name":"雪碧","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900010110":{"name":"鱼牛汉堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1106":{"name":"培根蔬萃双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png","currentPrice":"24.5","originalPrice":"24.5","canWithOrder":false},"1100":{"name":"巨无霸","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"506189":{"name":"如意百宝袋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_506189_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"9900005451":{"name":"麦辣鸡翅4块套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png","currentPrice":"37","originalPrice":"50.5","canWithOrder":false},"9900005453":{"name":"麦香鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png","currentPrice":"27.5","originalPrice":"41","canWithOrder":false},"507394":{"name":"牛奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png","currentPrice":"19","originalPrice":"19","canWithOrder":false},"9900008746":{"name":"鸡肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900008745":{"name":"新地","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008745_320.gif","currentPrice":"13","originalPrice":"13","canWithOrder":false},"9900008747":{"name":"牛肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif","currentPrice":"14","originalPrice":"14","canWithOrder":false},"515520":{"name":"怡泉+C","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1120":{"name":"双层吉士汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"9900008751":{"name":"可乐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900006332":{"name":"薄皮V翅双拼十翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900006332_320.png","currentPrice":"49.9","originalPrice":"77","canWithOrder":false},"9900008752":{"name":"派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif","currentPrice":"8","originalPrice":"8","canWithOrder":false},"9900008754":{"name":"经典麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008754_320.gif","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900005468":{"name":"培根蔬萃双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png","currentPrice":"35.5","originalPrice":"49","canWithOrder":false},"9900006957":{"name":"安格斯厚牛堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1401":{"name":"麦乐鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"9900016082":{"name":"心形薯饼5块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"1406":{"name":"板烧鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900005413":{"name":"双层深海鳕鱼堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png","currentPrice":"35.5","originalPrice":"49","canWithOrder":false},"9900016309":{"name":"龙焰鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png","currentPrice":"29","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015730":{"name":"BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif","currentPrice":"39.8","originalPrice":"54.5","canWithOrder":false},"9900016311":{"name":"龙焰美味四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif","currentPrice":"29","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900016310":{"name":"龙焰芝士棒鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png","currentPrice":"32","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521156":{"name":"那么大鸡排（椒盐风味）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900004835":{"name":"麦乐鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png","currentPrice":"25.5","originalPrice":"39","canWithOrder":false},"510488":{"name":"燕麦奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G510489_320.png","currentPrice":"21","originalPrice":"21","canWithOrder":false},"4648":{"name":"不素之霸双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_4648_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"9900003586":{"name":"双层深海鳕鱼堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png","currentPrice":"24.5","originalPrice":"24.5","canWithOrder":false},"9900000890":{"name":"板烧鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015729":{"name":"蘸酱BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif","currentPrice":"42.8","originalPrice":"57.5","canWithOrder":false},"521950":{"name":"蓝莓爆爆珠麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521950_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900013304":{"name":"人气经典随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png","currentPrice":"14.9","originalPrice":"14.9","canWithOrder":false},"521797":{"name":"北美招牌牧场酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_521797_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"521951":{"name":"灰焰圆筒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900011126":{"name":"酥脆无双套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png","currentPrice":"20","originalPrice":"20","canWithOrder":false},"521952":{"name":"龙焰鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900015602":{"name":"大堡口福三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015602_320.png","currentPrice":"22.9","originalPrice":"48","canWithOrder":false},"521953":{"name":"龙焰芝士棒鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png","currentPrice":"27","originalPrice":"27","canWithOrder":false},"9900011128":{"name":"“堡”你欢乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011128_320.png","currentPrice":"28","originalPrice":"43","canWithOrder":false},"521316":{"name":"高达吉士双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900011121":{"name":"“苹”水相“鱼”套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011121_320.png","currentPrice":"36","originalPrice":"54.5","canWithOrder":false},"9900015568":{"name":"精选超值随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png","currentPrice":"13.9","originalPrice":"13.9","canWithOrder":false},"9900011123":{"name":"“辣”么快乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png","currentPrice":"24","originalPrice":"37","canWithOrder":false},"521836":{"name":"柠檬脆脆麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521836_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"1700":{"name":"麦辣鸡翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900000888":{"name":"巨无霸四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000886":{"name":"不素之霸双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000886_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000885":{"name":"培根蔬萃双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000885_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"4810":{"name":"薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"510479":{"name":"燕麦奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G510481_320.png","currentPrice":"9.9","originalPrice":"23","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000882":{"name":"芝士安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005411":{"name":"不素之霸双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005411_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"9900000881":{"name":"培根安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900004066":{"name":"堡堡随心拼（7件任选）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif","currentPrice":"72.5","originalPrice":"104","canWithOrder":false},"9900004064":{"name":"精选单人餐三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif","currentPrice":"34.5","originalPrice":"47","canWithOrder":false},"1440":{"name":"麦辣鸡腿汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900016058":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016058_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900016056":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016056_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900016057":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016057_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900016055":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016055_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"9900009242":{"name":"“苹板”支撑Pro套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009242_320.png","currentPrice":"39.5","originalPrice":"53.5","canWithOrder":false},"9900009245":{"name":"牛气满满套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900000893":{"name":"双层深海鳕鱼堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005321":{"name":"BFF四宫格小食盘双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png","currentPrice":"62.9","originalPrice":"124","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000891":{"name":"麦辣鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515837":{"name":"圆筒冰淇淋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515837_320.png","currentPrice":"5","originalPrice":"5","canWithOrder":false},"521817":{"name":"【美汁源】“多汁柠柠”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"6102":{"name":"苹果片","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6102_320.png","currentPrice":"7","originalPrice":"7","canWithOrder":false},"9900005428":{"name":"培根安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png","currentPrice":"45.5","originalPrice":"59","canWithOrder":false},"1450":{"name":"麦香鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"520445":{"name":"薄皮焦香V翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241202/product/MS_520445_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"520689":{"name":"鲜萃咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"507409":{"name":"麦咖啡™奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"3505":{"name":"锡兰红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1600":{"name":"麦香鱼","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"507411":{"name":"麦咖啡™美式","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif","currentPrice":"11.9","originalPrice":"19","discountType":"促销优惠","canWithOrder":false},"9900003538":{"name":"学生专享饮品随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif","currentPrice":"10","originalPrice":"10","canWithOrder":false},"9900003537":{"name":"学生专享汉堡小食随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif","currentPrice":"28","originalPrice":"28","canWithOrder":false},"9900005430":{"name":"芝士安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png","currentPrice":"42.5","originalPrice":"56","canWithOrder":false},"4437":{"name":"玉米杯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"515945":{"name":"浓浓黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"9900005432":{"name":"麦麦脆汁鸡1块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false}}},"plans":[{"label":"精选超值随心配 ×3","kind":"qxp","note":"各点各的一份，最便宜的入口","items":[{"productCode":"9900015568","quantity":3}],"price":41.7,"original":41.7,"ok":true,"per":13.9,"tags":[{"t":"最便宜","k":"best"}],"items_text":"精选超值随心配×3"},{"label":"牛肉堡单品精选 ＋ 脆薯饼 ×3","kind":"single","note":"堡 ＋ 小食，各点各的","items":[{"productCode":"9900008747","quantity":3},{"productCode":"521741","quantity":3}],"price":67.5,"original":67.5,"ok":true,"per":22.5,"tags":[{"t":"贵 ¥25.80","k":"gray"}],"items_text":"牛肉堡单品精选×3、脆薯饼×3"},{"label":"大堡口福三件套 ×3","kind":"combo","note":"堡 ＋ 小食 ＋ 饮料，一人一套","items":[{"productCode":"9900015602","quantity":3}],"price":68.7,"original":68.7,"ok":true,"per":22.9,"tags":[{"t":"贵 ¥27","k":"gray"}],"items_text":"大堡口福三件套×3"},{"label":"龙焰鸡腿堡三件套 ×3","kind":"combo","note":"换一种口味，贵一点","items":[{"productCode":"9900016073","quantity":3}],"price":80.7,"original":80.7,"ok":true,"per":26.9,"tags":[{"t":"贵 ¥39","k":"gray"}],"items_text":"龙焰鸡腿堡三件套×3"},{"label":"开心亲子双人餐 ×2","kind":"family","note":"一份够 2 人，摆一桌分着吃","items":[{"productCode":"9900016055","quantity":2}],"price":119.0,"original":119.0,"ok":true,"per":39.67,"tags":[{"t":"适合分食","k":"gray"}],"items_text":"开心亲子双人餐×2"}],"best":{"label":"精选超值随心配 ×3","kind":"qxp","note":"各点各的一份，最便宜的入口","items":[{"productCode":"9900015568","quantity":3}],"price":41.7,"original":41.7,"ok":true,"per":13.9,"tags":[{"t":"最便宜","k":"best"}],"items_text":"精选超值随心配×3"},"slot":"","coupons":{"mine":3,"claimable":3,"at_store":["19.9元王牌炸鸡任选2","11.9元麦辣鸡腿堡"],"head":"卡包现有 3 张券，麦麦省还有 3 张可领。","detail":"其中 2 张限周一、1 张限周三，这会儿用不上。 这家店这会儿能用的：19.9元王牌炸鸡任选2、11.9元麦辣鸡腿堡。可领券领之前看不出能不能用——先领再复查，别按它算钱。"},"card":{"text":"这单用不上——不买 <b>¥41.70<\/b>，买了 <b class='no'>¥51.60<\/b>，反而多花。","worth":false,"hint":"点餐页加购的是 15 天体验卡 ¥9.90；App 会员页是月卡 ¥19，别混"},"ways":{"rows":[{"name":"步行","key":"walk","short":"步行","min":14,"legs":[{"label":"去门店","min":5},{"label":"回落脚点","min":9}],"per_leg":"5 分 ＋ 9 分","cost":0.0,"cost_text":"免费","note":"免费","off":false,"warn":"","tag":"","best":false},{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":6,"legs":[{"label":"去门店","min":2},{"label":"回落脚点","min":4}],"per_leg":"2 分 ＋ 4 分","cost":9.0,"cost_text":"3 人 约 ¥9","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"最快","best":true},{"name":"打车","key":"taxi","short":"打车","min":9,"legs":[{"label":"去门店","min":2},{"label":"回落脚点","min":7}],"per_leg":"2 分 ＋ 7 分","cost":22.0,"cost_text":"¥22 / 车","note":"一车装得下就按一车算","off":false,"warn":"","tag":"","best":false}],"best":{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":6,"legs":[{"label":"去门店","min":2},{"label":"回落脚点","min":4}],"per_leg":"2 分 ＋ 4 分","cost":9.0,"cost_text":"3 人 约 ¥9","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"最快","best":true},"head":"当前地址 → 门店（0.3 km）→ <b>落脚点<\/b>（0.6 km）","note":"<b>默认按吃完回你填的落脚点算<\/b>，回程这段的费用和时间都含在合计里 · 这一段地铁公交不划算，没列 · 换地址会自动重算"},"focus":"time","verdict":{"lead":"骑行 2 分钟就到，3 人 ¥41.70。","lead_text":"骑行 2 分钟就到，3 人 ¥41.70。","price":41.7,"per":13.9,"tags":[{"t":"现做 · 到嘴还是烫的","k":"hot"},{"t":"3 人 · 人均 ¥13.90","k":""},{"t":"交通 3 人 约 ¥9","k":""}]},"close":{"main":"精选超值随心配 ×3，<b>¥41.70<\/b>，人均 ¥13.90。","detail":"交通另计：3 人 约 ¥9"},"action":{"title":"到店点单，照着说","steps":["去：麦当劳杭州滨江区ONE聚场餐厅","精选超值随心配 ×3","骑行 / 共享电瓶车 6 分钟（3 人 约 ¥9）","合计 ¥41.70"],"foot":"到店说，或截屏给同伴"},"rel":"甜品有<b>第二份半价<\/b>——「新地」这类，两个人点两份只花一份半的钱。"},"delivery":{"ok":true,"store":{"code":"3330547","beCode":"333054702","name":"麦当劳杭州滨江区ONE聚场餐厅","address":"送达：浙江省杭州市滨江区飞虹路208号 杭州奥体中心希尔顿欢朋酒店前台","businessStartTime":"07:00","businessEndTime":"23:00"},"plans":[{"label":"薄皮V翅十翅桶","kind":"family","note":"一份够 3 人，摆一桌分着吃","items":[{"productCode":"9900016492","quantity":1}],"price":65.4,"original":65.4,"ok":true,"per":21.8,"tags":[{"t":"最便宜","k":"best"}],"items_text":"薄皮V翅十翅桶"},{"label":"汉堡包 ＋ 脆薯饼 ×3","kind":"single","note":"堡 ＋ 小食，各点各的","items":[{"productCode":"901000","quantity":3},{"productCode":"521741","quantity":3}],"price":82.5,"original":85.2,"ok":true,"per":27.5,"tags":[{"t":"贵 ¥17.10","k":"gray"}],"items_text":"汉堡包×3、脆薯饼×3"},{"label":"大堡口福四件套（双层脆鸡堡） ×3","kind":"combo","note":"堡 ＋ 小食 ＋ 饮料，一人一套","items":[{"productCode":"9900006233","quantity":3}],"price":113.7,"original":116.4,"ok":true,"per":37.9,"tags":[{"t":"贵 ¥48.30","k":"gray"}],"items_text":"大堡口福四件套（双层脆鸡堡）×3"},{"label":"大堡口福四件套（Hold不住鸡排堡） ×3","kind":"combo","note":"换一种口味，贵一点","items":[{"productCode":"9900010670","quantity":3}],"price":116.7,"original":119.4,"ok":true,"per":38.9,"tags":[{"t":"贵 ¥51.30","k":"gray"}],"items_text":"大堡口福四件套（Hold不住鸡排堡）×3"}],"best":{"label":"薄皮V翅十翅桶","kind":"family","note":"一份够 3 人，摆一桌分着吃","items":[{"productCode":"9900016492","quantity":1}],"price":65.4,"original":65.4,"ok":true,"per":21.8,"tags":[{"t":"最便宜","k":"best"}],"items_text":"薄皮V翅十翅桶"},"coupons":{"mine":3,"claimable":3,"at_store":["19.9元王牌炸鸡任选2","11.9元麦辣鸡腿堡"],"head":"卡包现有 3 张券，麦麦省还有 3 张可领。","detail":"其中 2 张限周一、1 张限周三，这会儿用不上。 这家店这会儿能用的：19.9元王牌炸鸡任选2、11.9元麦辣鸡腿堡。可领券领之前看不出能不能用——先领再复查，别按它算钱。"},"card":{"text":"这单用不上——不买 <b>¥65.40<\/b>，买了 <b class='no'>¥66.80<\/b>，反而多花。","worth":false,"hint":"点餐页加购的是 15 天体验卡 ¥9.90；App 会员页是月卡 ¥19，别混"},"ways":{"rows":[{"name":"步行","key":"walk","short":"步行","min":10,"legs":[{"label":"回落脚点","min":10}],"per_leg":"","cost":0.0,"cost_text":"免费","note":"免费","off":false,"warn":"","tag":"","best":false},{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":4,"legs":[{"label":"回落脚点","min":4}],"per_leg":"","cost":4.5,"cost_text":"3 人 约 ¥4.50","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"最快","best":true},{"name":"打车","key":"taxi","short":"打车","min":6,"legs":[{"label":"回落脚点","min":6}],"per_leg":"","cost":11.0,"cost_text":"¥11 / 车","note":"一车装得下就按一车算","off":false,"warn":"","tag":"","best":false}],"best":{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":4,"legs":[{"label":"回落脚点","min":4}],"per_leg":"","cost":4.5,"cost_text":"3 人 约 ¥4.50","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"最快","best":true},"head":"当前地址 → <b>落脚点<\/b>（0.4 km）","note":"外送不用你跑这一段 —— 这里算的是你自己过去要花的时间和钱，方便跟堂食比"},"delivery":{"to":"杭州奥体中心希尔顿欢朋酒店","store":"麦当劳杭州滨江区ONE聚场餐厅","hours":"07:00-23:00","note":"这单由「麦当劳杭州滨江区ONE聚场餐厅」外送 · 营业 07:00-23:00 · 送达时刻以下单页为准（MCP 不返回 ETA）"},"focus":"time","verdict":{"lead":"送到杭州奥体中心希尔顿欢朋酒店，3 人 ¥65.40。","lead_text":"送到杭州奥体中心希尔顿欢朋酒店，3 人 ¥65.40。","price":65.4,"per":21.8,"tags":[{"t":"等送到","k":""},{"t":"3 人 · 人均 ¥21.80","k":""}]},"close":{"main":"薄皮V翅十翅桶，<b>¥65.40<\/b>，人均 ¥21.80。","detail":"比堂食贵 ¥23.70　·　价格已含运费和打包费（外送按件收，封顶 ¥3）"},"action":{"title":"外卖下单，照着说","steps":["薄皮V翅十翅桶","送到 浙江省杭州市滨江区飞虹路208号杭州奥体中心希尔顿欢朋酒店","合计 ¥65.40"],"foot":"送达时刻以下单页为准"},"rel":null}},"warnings":[],"echo":{"people":3,"form":"undecided","when":"2026-10-24 21:15","from_addr":"浙江省杭州市滨江区飞虹路3号","to_addr":"浙江省杭州市滨江区飞虹路208号","budget":0.0,"taste":"","rel":"同学","tired":"适中","weekday":"周六","pref":{"want":[],"avoid":[],"diet":[]}},"mode":"reserve","now":{"date":"2026-10-20","weekday":"周二","hhmm":"10:44"},"plan":{"date":"2026-10-24","weekday":"周六","hhmm":"21:15","label":"预约"},"geo":{"from":"浙江省杭州市滨江区飞虹路18号","to":"浙江省杭州市滨江区飞虹路208号"},"store":{"code":"3330547","beCode":null,"name":"麦当劳杭州滨江区ONE聚场餐厅","address":"奥体中心站One聚场E出口","api_dist":26,"resv":[{"date":"2026-10-20","today":true,"reservationOptionText":"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"},{"date":"2026-10-21","today":false,"reservationOptionText":"早餐(07:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"}],"loc":"120.232358,30.224073","km":0.29,"walk_sec":321,"meals":{"9900005456":{"name":"麦辣鸡腿汉堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png","currentPrice":"33.5","originalPrice":"47","canWithOrder":false},"511781":{"name":"培根安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png","currentPrice":"34.5","originalPrice":"34.5","canWithOrder":false},"521908":{"name":"黑洋酥小圆子风味派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521908_320.png","currentPrice":"5","originalPrice":"9.5","discountType":"促销优惠","canWithOrder":false},"511782":{"name":"芝士安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png","currentPrice":"31.5","originalPrice":"31.5","canWithOrder":false},"521741":{"name":"脆薯饼","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521741_320.png","currentPrice":"8.5","originalPrice":"8.5","canWithOrder":false},"2430":{"name":"【美汁源】“黄金橙橙”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"521986":{"name":"马苏里拉拉丝芝士条","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png","currentPrice":"11","originalPrice":"16","discountType":"促销优惠","canWithOrder":false},"9900011056":{"name":"全明星双人分享餐八件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_9900011056_320.gif","currentPrice":"49.9","originalPrice":"118","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521901":{"name":"月下相思扭扭薯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521901_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900016078":{"name":"蘸酱麦麦脆汁鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900016079":{"name":"蘸酱脆皮鸡柳","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016079_320.png","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"9900016076":{"name":"“我就喜欢”鸡薯双全盒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png","currentPrice":"15.9","originalPrice":"30","canWithOrder":false},"9900016077":{"name":"蘸酱炸鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"9900016075":{"name":"龙焰芝士棒鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png","currentPrice":"29.9","originalPrice":"51.5","canWithOrder":false},"9900016073":{"name":"龙焰鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png","currentPrice":"26.9","originalPrice":"48.5","canWithOrder":false},"9900005460":{"name":"麦香鱼套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900005462":{"name":"板烧鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"3755":{"name":"纯牛奶(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png","currentPrice":"11","originalPrice":"11","canWithOrder":false},"9900005464":{"name":"双层吉士汉堡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900004236":{"name":"人气超值四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"3757":{"name":"纯悦","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_3757_320.png","currentPrice":"7.5","originalPrice":"7.5","canWithOrder":false},"9900005466":{"name":"巨无霸三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"6362":{"name":"100% 苹果汁(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"521917":{"name":"泷愿成真麦旋风——大米风味","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521917_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900005449":{"name":"吉士汉堡包套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png","currentPrice":"26","originalPrice":"39.5","canWithOrder":false},"3010":{"name":"雪碧","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900010110":{"name":"鱼牛汉堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1106":{"name":"培根蔬萃双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png","currentPrice":"24.5","originalPrice":"24.5","canWithOrder":false},"1100":{"name":"巨无霸","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"506189":{"name":"如意百宝袋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_506189_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"9900005451":{"name":"麦辣鸡翅4块套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png","currentPrice":"37","originalPrice":"50.5","canWithOrder":false},"9900005453":{"name":"麦香鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png","currentPrice":"27.5","originalPrice":"41","canWithOrder":false},"507394":{"name":"牛奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png","currentPrice":"19","originalPrice":"19","canWithOrder":false},"9900008746":{"name":"鸡肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900008745":{"name":"新地","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008745_320.gif","currentPrice":"13","originalPrice":"13","canWithOrder":false},"9900008747":{"name":"牛肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif","currentPrice":"14","originalPrice":"14","canWithOrder":false},"515520":{"name":"怡泉+C","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1120":{"name":"双层吉士汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"9900008751":{"name":"可乐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900006332":{"name":"薄皮V翅双拼十翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900006332_320.png","currentPrice":"49.9","originalPrice":"77","canWithOrder":false},"9900008752":{"name":"派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif","currentPrice":"8","originalPrice":"8","canWithOrder":false},"9900008754":{"name":"经典麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008754_320.gif","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900005468":{"name":"培根蔬萃双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png","currentPrice":"35.5","originalPrice":"49","canWithOrder":false},"9900006957":{"name":"安格斯厚牛堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1401":{"name":"麦乐鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"9900016082":{"name":"心形薯饼5块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"1406":{"name":"板烧鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900005413":{"name":"双层深海鳕鱼堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png","currentPrice":"35.5","originalPrice":"49","canWithOrder":false},"9900016309":{"name":"龙焰鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png","currentPrice":"29","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015730":{"name":"BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif","currentPrice":"39.8","originalPrice":"54.5","canWithOrder":false},"9900016311":{"name":"龙焰美味四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif","currentPrice":"29","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900016310":{"name":"龙焰芝士棒鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png","currentPrice":"32","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521156":{"name":"那么大鸡排（椒盐风味）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900004835":{"name":"麦乐鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png","currentPrice":"25.5","originalPrice":"39","canWithOrder":false},"510488":{"name":"燕麦奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G510489_320.png","currentPrice":"21","originalPrice":"21","canWithOrder":false},"4648":{"name":"不素之霸双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_4648_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"9900003586":{"name":"双层深海鳕鱼堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png","currentPrice":"24.5","originalPrice":"24.5","canWithOrder":false},"9900000890":{"name":"板烧鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015729":{"name":"蘸酱BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif","currentPrice":"42.8","originalPrice":"57.5","canWithOrder":false},"521950":{"name":"蓝莓爆爆珠麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521950_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900013304":{"name":"人气经典随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png","currentPrice":"14.9","originalPrice":"14.9","canWithOrder":false},"521797":{"name":"北美招牌牧场酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_521797_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"521951":{"name":"灰焰圆筒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900011126":{"name":"酥脆无双套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png","currentPrice":"20","originalPrice":"20","canWithOrder":false},"521952":{"name":"龙焰鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900015602":{"name":"大堡口福三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015602_320.png","currentPrice":"22.9","originalPrice":"48","canWithOrder":false},"521953":{"name":"龙焰芝士棒鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png","currentPrice":"27","originalPrice":"27","canWithOrder":false},"9900011128":{"name":"“堡”你欢乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011128_320.png","currentPrice":"28","originalPrice":"43","canWithOrder":false},"521316":{"name":"高达吉士双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900011121":{"name":"“苹”水相“鱼”套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011121_320.png","currentPrice":"36","originalPrice":"54.5","canWithOrder":false},"9900015568":{"name":"精选超值随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png","currentPrice":"13.9","originalPrice":"13.9","canWithOrder":false},"9900011123":{"name":"“辣”么快乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png","currentPrice":"24","originalPrice":"37","canWithOrder":false},"521836":{"name":"柠檬脆脆麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521836_320.gif","currentPrice":"16","originalPrice":"16","canWithOrder":false},"1700":{"name":"麦辣鸡翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900000888":{"name":"巨无霸四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000886":{"name":"不素之霸双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000886_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000885":{"name":"培根蔬萃双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000885_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"4810":{"name":"薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"510479":{"name":"燕麦奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G510481_320.png","currentPrice":"9.9","originalPrice":"23","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000882":{"name":"芝士安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005411":{"name":"不素之霸双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005411_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"9900000881":{"name":"培根安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png","currentPrice":"37","originalPrice":"66.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900004066":{"name":"堡堡随心拼（7件任选）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif","currentPrice":"72.5","originalPrice":"104","canWithOrder":false},"9900004064":{"name":"精选单人餐三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif","currentPrice":"34.5","originalPrice":"47","canWithOrder":false},"1440":{"name":"麦辣鸡腿汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900016058":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016058_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900016056":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016056_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900016057":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016057_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900016055":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016055_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"9900009242":{"name":"“苹板”支撑Pro套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009242_320.png","currentPrice":"39.5","originalPrice":"53.5","canWithOrder":false},"9900009245":{"name":"牛气满满套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900000893":{"name":"双层深海鳕鱼堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png","currentPrice":"32","originalPrice":"59.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005321":{"name":"BFF四宫格小食盘双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png","currentPrice":"62.9","originalPrice":"124","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000891":{"name":"麦辣鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png","currentPrice":"28","originalPrice":"57.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515837":{"name":"圆筒冰淇淋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515837_320.png","currentPrice":"5","originalPrice":"5","canWithOrder":false},"521817":{"name":"【美汁源】“多汁柠柠”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"6102":{"name":"苹果片","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6102_320.png","currentPrice":"7","originalPrice":"7","canWithOrder":false},"9900005428":{"name":"培根安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png","currentPrice":"45.5","originalPrice":"59","canWithOrder":false},"1450":{"name":"麦香鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"520445":{"name":"薄皮焦香V翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241202/product/MS_520445_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"520689":{"name":"鲜萃咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"507409":{"name":"麦咖啡™奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"3505":{"name":"锡兰红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1600":{"name":"麦香鱼","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"507411":{"name":"麦咖啡™美式","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif","currentPrice":"11.9","originalPrice":"19","discountType":"促销优惠","canWithOrder":false},"9900003538":{"name":"学生专享饮品随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif","currentPrice":"10","originalPrice":"10","canWithOrder":false},"9900003537":{"name":"学生专享汉堡小食随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif","currentPrice":"28","originalPrice":"28","canWithOrder":false},"9900005430":{"name":"芝士安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png","currentPrice":"42.5","originalPrice":"56","canWithOrder":false},"4437":{"name":"玉米杯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"515945":{"name":"浓浓黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"9900005432":{"name":"麦麦脆汁鸡1块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false}}},"took_ms":9576,"calls":33},"B":{"ok":true,"panes":{"dinein":{"ok":true,"store":{"code":"1960073","beCode":null,"name":"麦当劳武汉宝利金餐厅","address":"花楼街198号宝利金国际广场二期四座一层１－２号，二层１－４、30-34号商铺","api_dist":23,"resv":[{"date":"2026-10-20","today":true,"reservationOptionText":"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"},{"date":"2026-10-21","today":false,"reservationOptionText":"宵夜(00:00至01:46,22:14至23:59)，早餐(07:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"}],"loc":"114.293106,30.578522","km":0.12,"walk_sec":124,"meals":{"9900005456":{"name":"麦辣鸡腿汉堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png","currentPrice":"33.5","originalPrice":"47","canWithOrder":false},"511781":{"name":"培根安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png","currentPrice":"34.5","originalPrice":"34.5","canWithOrder":false},"521906":{"name":"玫瑰红糖糍粑风味派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521906_320.png","currentPrice":"5","originalPrice":"10","discountType":"促销优惠","canWithOrder":false},"6352":{"name":"阳光橙麦炫酷","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6352_320.png","currentPrice":"13.5","originalPrice":"13.5","canWithOrder":false},"511782":{"name":"芝士安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png","currentPrice":"31.5","originalPrice":"31.5","canWithOrder":false},"2430":{"name":"【美汁源】“黄金橙橙”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"521986":{"name":"马苏里拉拉丝芝士条","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png","currentPrice":"11","originalPrice":"16","discountType":"促销优惠","canWithOrder":false},"521900":{"name":"咸蛋黄鸡腿蛋月堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521900_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900011056":{"name":"全明星双人分享餐八件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_9900011056_320.gif","currentPrice":"49.9","originalPrice":"117","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521901":{"name":"月下相思扭扭薯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521901_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900016078":{"name":"蘸酱麦麦脆汁鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900016076":{"name":"“我就喜欢”鸡薯双全盒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png","currentPrice":"15.9","originalPrice":"29.5","canWithOrder":false},"9900016077":{"name":"蘸酱炸鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"521750":{"name":"泷盐星星麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521750_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"521871":{"name":"美禄可可雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521871_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900016075":{"name":"龙焰芝士棒鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png","currentPrice":"29.9","originalPrice":"51.5","canWithOrder":false},"9900016073":{"name":"龙焰鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png","currentPrice":"26.9","originalPrice":"48.5","canWithOrder":false},"9900005460":{"name":"麦香鱼套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png","currentPrice":"33","originalPrice":"46.5","canWithOrder":false},"9900005462":{"name":"板烧鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"3755":{"name":"纯牛奶(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png","currentPrice":"11","originalPrice":"11","canWithOrder":false},"9900005464":{"name":"双层吉士汉堡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900004236":{"name":"人气超值四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"3757":{"name":"纯悦","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_3757_320.png","currentPrice":"7.5","originalPrice":"7.5","canWithOrder":false},"9900005466":{"name":"巨无霸三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"510041":{"name":"牛奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png","currentPrice":"19","originalPrice":"19","canWithOrder":false},"6362":{"name":"100% 苹果汁(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"521917":{"name":"泷愿成真麦旋风——大米风味","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521917_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"9900005449":{"name":"吉士汉堡包套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png","currentPrice":"26.5","originalPrice":"40","canWithOrder":false},"3010":{"name":"雪碧","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900010110":{"name":"鱼牛汉堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1106":{"name":"培根蔬萃双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"1100":{"name":"巨无霸","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"506189":{"name":"如意百宝袋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_506189_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"9900005451":{"name":"麦辣鸡翅4块套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png","currentPrice":"36.5","originalPrice":"50","canWithOrder":false},"9900005453":{"name":"麦香鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png","currentPrice":"27.5","originalPrice":"41","canWithOrder":false},"9900008746":{"name":"鸡肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900008745":{"name":"新地","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008745_320.gif","currentPrice":"13","originalPrice":"13","canWithOrder":false},"9900008747":{"name":"牛肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif","currentPrice":"14","originalPrice":"14","canWithOrder":false},"515520":{"name":"怡泉+C","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1120":{"name":"双层吉士汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"521966":{"name":"韩式烟熏芝士风味酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521966_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"9900015561":{"name":"麦咖啡冰爽一夏","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015561_320.gif","currentPrice":"9.9","originalPrice":"23","canWithOrder":false},"9900016096":{"name":"蘸酱韩式甜辣酱鸡块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016096_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900008751":{"name":"可乐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900006332":{"name":"薄皮V翅双拼十翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900006332_320.png","currentPrice":"49.9","originalPrice":"74.5","canWithOrder":false},"9900008752":{"name":"派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif","currentPrice":"8.5","originalPrice":"8.5","canWithOrder":false},"9900008754":{"name":"经典麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008754_320.gif","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"9900005468":{"name":"培根蔬萃双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png","currentPrice":"36","originalPrice":"49.5","canWithOrder":false},"9900006957":{"name":"安格斯厚牛堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015704":{"name":"厚薯泥培根肉酱双牛堡买一送一","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015704_320.gif","currentPrice":"28.9","originalPrice":"28.9","canWithOrder":false},"521737":{"name":"厚薯泥培根肉酱双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521737_320.png","currentPrice":"30","originalPrice":"30","canWithOrder":false},"1401":{"name":"麦乐鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900016082":{"name":"心形薯饼5块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"1406":{"name":"板烧鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900005413":{"name":"双层深海鳕鱼堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png","currentPrice":"35","originalPrice":"48.5","canWithOrder":false},"514851":{"name":"咖啡阿芙佳朵","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_514851_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900016309":{"name":"龙焰鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015730":{"name":"BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif","currentPrice":"40.3","originalPrice":"53.5","canWithOrder":false},"9900016311":{"name":"龙焰美味四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900016310":{"name":"龙焰芝士棒鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png","currentPrice":"32","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521791":{"name":"茉莉奶绿雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521791_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"521156":{"name":"那么大鸡排（椒盐风味）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900004835":{"name":"麦乐鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png","currentPrice":"25","originalPrice":"38.5","canWithOrder":false},"4648":{"name":"不素之霸双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_4648_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"9900005421":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_9900005421_320_1745810420363.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900003586":{"name":"双层深海鳕鱼堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900005422":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240828/product/MS_9900005422_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900000890":{"name":"板烧鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521717":{"name":"椰奶雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521717_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900015729":{"name":"蘸酱BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif","currentPrice":"43.3","originalPrice":"56.5","canWithOrder":false},"9900013304":{"name":"人气经典随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png","currentPrice":"14.9","originalPrice":"14.9","canWithOrder":false},"9900015726":{"name":"韩式甜辣酱鸡块8块","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260815/product/MS_9900015726_320.png","currentPrice":"19.9","originalPrice":"30","canWithOrder":false},"521951":{"name":"灰焰圆筒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900011126":{"name":"酥脆无双套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png","currentPrice":"20","originalPrice":"20","canWithOrder":false},"521952":{"name":"龙焰鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"521953":{"name":"龙焰芝士棒鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png","currentPrice":"27","originalPrice":"27","canWithOrder":false},"521799":{"name":"日式鲜磨山葵酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521799_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"9900011128":{"name":"“堡”你欢乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011128_320.png","currentPrice":"28","originalPrice":"42.5","canWithOrder":false},"521316":{"name":"高达吉士双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900011121":{"name":"“苹”水相“鱼”套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011121_320.png","currentPrice":"36","originalPrice":"52.5","canWithOrder":false},"9900015568":{"name":"精选超值随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png","currentPrice":"13.9","originalPrice":"13.9","canWithOrder":false},"9900011123":{"name":"“辣”么快乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png","currentPrice":"24","originalPrice":"36","canWithOrder":false},"9900015850":{"name":"咸蛋黄鸡腿蛋月堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015850_320.png","currentPrice":"26.9","originalPrice":"49.5","canWithOrder":false},"1700":{"name":"麦辣鸡翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"9900015450":{"name":"厚薯泥培根肉酱双牛堡两件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260729/product/MS_9900015450_320.gif","currentPrice":"25.9","originalPrice":"40","canWithOrder":false},"9900000888":{"name":"巨无霸四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000886":{"name":"不素之霸双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000886_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000885":{"name":"培根蔬萃双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000885_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"4810":{"name":"薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"510479":{"name":"燕麦奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G510481_320.png","currentPrice":"9.9","originalPrice":"23","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000882":{"name":"芝士安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005411":{"name":"不素之霸双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005411_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"9900000881":{"name":"培根安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900004066":{"name":"堡堡随心拼（7件任选）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif","currentPrice":"72.5","originalPrice":"104","canWithOrder":false},"9900004064":{"name":"精选单人餐三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif","currentPrice":"34.5","originalPrice":"47","canWithOrder":false},"9900005439":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_9900005439_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"1440":{"name":"麦辣鸡腿汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"515280":{"name":"阳光柠檬红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515280_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900016058":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016058_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900016056":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016056_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900016057":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016057_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900016055":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016055_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"9900009242":{"name":"“苹板”支撑Pro套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009242_320.png","currentPrice":"39.5","originalPrice":"53.5","canWithOrder":false},"507389":{"name":"浓缩咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_507389_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900009245":{"name":"牛气满满套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"9900000893":{"name":"双层深海鳕鱼堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515955":{"name":"浓浓燕麦黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515954_320.gif","currentPrice":"15.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900005321":{"name":"BFF四宫格小食盘双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png","currentPrice":"62.9","originalPrice":"123","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000891":{"name":"麦辣鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515837":{"name":"圆筒冰淇淋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515837_320.png","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900005423":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_9900005423_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"521817":{"name":"【美汁源】“多汁柠柠”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"6102":{"name":"苹果片","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6102_320.png","currentPrice":"7","originalPrice":"7","canWithOrder":false},"9900005428":{"name":"培根安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png","currentPrice":"45.5","originalPrice":"59","canWithOrder":false},"1450":{"name":"麦香鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"520445":{"name":"薄皮焦香V翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241202/product/MS_520445_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"520689":{"name":"鲜萃咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"507409":{"name":"麦咖啡™奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"3505":{"name":"锡兰红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png","currentPrice":"10.5","originalPrice":"10.5","canWithOrder":false},"1600":{"name":"麦香鱼","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png","currentPrice":"22","originalPrice":"22","canWithOrder":false},"507411":{"name":"麦咖啡™美式","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif","currentPrice":"11.9","originalPrice":"19","discountType":"促销优惠","canWithOrder":false},"9900003538":{"name":"学生专享饮品随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif","currentPrice":"10","originalPrice":"10","canWithOrder":false},"9900003537":{"name":"学生专享汉堡小食随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif","currentPrice":"28","originalPrice":"28","canWithOrder":false},"515949":{"name":"浓浓黑巧雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250611/product/MS_G515949_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"9900005430":{"name":"芝士安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png","currentPrice":"42.5","originalPrice":"56","canWithOrder":false},"4437":{"name":"玉米杯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"515946":{"name":"浓浓黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"9900005432":{"name":"麦麦脆汁鸡1块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false}}},"pref":{"want":["麦辣鸡翅"],"avoid":["冰","冷","有人不吃冰冷"],"hit":["麦辣鸡翅"],"missing":[],"avoid_in":[],"all_avoid":false,"empty":false},"plans":[{"label":"麦辣鸡翅 ×4 ＋ 牛肉堡单品精选 ×4","kind":"pref_full","note":"要的那口 ＋ 一份配的，吃得饱","items":[{"productCode":"1700","quantity":4},{"productCode":"9900008747","quantity":4}],"pref":true,"hit":["麦辣鸡翅"],"price":114.0,"original":114.0,"ok":true,"per":28.5,"tags":[{"t":"含麦辣鸡翅","k":"best"},{"t":"现做 · 到嘴还是烫的","k":"hot"}],"items_text":"麦辣鸡翅×4、牛肉堡单品精选×4"},{"label":"麦辣鸡翅 ×4","kind":"pref_single","note":"只要这口，不加别的","items":[{"productCode":"1700","quantity":4}],"pref":true,"hit":["麦辣鸡翅"],"price":58.0,"original":58.0,"ok":true,"per":14.5,"tags":[{"t":"含麦辣鸡翅","k":"best"},{"t":"现做 · 到嘴还是烫的","k":"hot"}],"items_text":"麦辣鸡翅×4"},{"label":"精选超值随心配 ×4","kind":"qxp","note":"各点各的一份，最便宜的入口","items":[{"productCode":"9900015568","quantity":4}],"price":55.6,"original":55.6,"ok":true,"per":13.9,"tags":[{"t":"最便宜","k":"best"}],"items_text":"精选超值随心配×4"},{"label":"龙焰鸡腿堡三件套 ×4","kind":"combo","note":"堡 ＋ 小食 ＋ 饮料，一人一套","items":[{"productCode":"9900016073","quantity":4}],"price":107.6,"original":107.6,"ok":true,"per":26.9,"tags":[{"t":"贵 ¥52","k":"gray"}],"items_text":"龙焰鸡腿堡三件套×4"},{"label":"咸蛋黄鸡腿蛋月堡三件套 ×4","kind":"combo","note":"换一种口味，贵一点","items":[{"productCode":"9900015850","quantity":4}],"price":107.6,"original":107.6,"ok":true,"per":26.9,"tags":[{"t":"贵 ¥52","k":"gray"}],"items_text":"咸蛋黄鸡腿蛋月堡三件套×4"}],"best":{"label":"麦辣鸡翅 ×4 ＋ 牛肉堡单品精选 ×4","kind":"pref_full","note":"要的那口 ＋ 一份配的，吃得饱","items":[{"productCode":"1700","quantity":4},{"productCode":"9900008747","quantity":4}],"pref":true,"hit":["麦辣鸡翅"],"price":114.0,"original":114.0,"ok":true,"per":28.5,"tags":[{"t":"含麦辣鸡翅","k":"best"},{"t":"现做 · 到嘴还是烫的","k":"hot"}],"items_text":"麦辣鸡翅×4、牛肉堡单品精选×4"},"slot":"","coupons":{"mine":3,"claimable":3,"at_store":["19.9元王牌炸鸡任选2","11.9元麦辣鸡腿堡"],"head":"卡包现有 3 张券，麦麦省还有 3 张可领。","detail":"其中 2 张限周一、1 张限周三，这会儿用不上。 这家店这会儿能用的：19.9元王牌炸鸡任选2、11.9元麦辣鸡腿堡。可领券领之前看不出能不能用——先领再复查，别按它算钱。"},"card":{"text":"这单用不上——不买 <b>¥114<\/b>，买了 <b class='no'>¥123.90<\/b>，反而多花。","worth":false,"hint":"点餐页加购的是 15 天体验卡 ¥9.90；App 会员页是月卡 ¥19，别混"},"ways":{"rows":[{"name":"步行","key":"walk","short":"步行","min":19,"legs":[{"label":"去门店","min":2},{"label":"回落脚点","min":17}],"per_leg":"2 分 ＋ 17 分","cost":0.0,"cost_text":"免费","note":"免费","off":false,"warn":"","tag":"最快","best":true},{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":21,"legs":[{"label":"去门店","min":12},{"label":"回落脚点","min":10}],"per_leg":"12 分 ＋ 10 分","cost":12.0,"cost_text":"4 人 约 ¥12","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"","best":false},{"name":"打车","key":"taxi","short":"打车","min":29,"legs":[{"label":"去门店","min":15},{"label":"回落脚点","min":15}],"per_leg":"15 分 ＋ 15 分","cost":20.0,"cost_text":"¥20 / 车","note":"一车装得下就按一车算","off":false,"warn":"","tag":"","best":false}],"best":{"name":"步行","key":"walk","short":"步行","min":19,"legs":[{"label":"去门店","min":2},{"label":"回落脚点","min":17}],"per_leg":"2 分 ＋ 17 分","cost":0.0,"cost_text":"免费","note":"免费","off":false,"warn":"","tag":"最快","best":true},"head":"当前地址 → 门店（0.1 km）→ <b>落脚点<\/b>（1.2 km）","note":"<b>默认按吃完回你填的落脚点算<\/b>，回程这段的费用和时间都含在合计里 · 这一段地铁公交不划算，没列 · 换地址会自动重算"},"focus":"temp","verdict":{"lead":"有<b class='em'>麦辣鸡翅<\/b>，步行 2 分钟就到。","lead_text":"有麦辣鸡翅，步行 2 分钟就到。","price":114.0,"per":28.5,"tags":[{"t":"现做 · 到嘴还是烫的","k":"hot"},{"t":"4 人 · 人均 ¥28.50","k":""},{"t":"交通 免费","k":""}]},"close":{"main":"麦辣鸡翅 ×4 ＋ 牛肉堡单品精选 ×4，<b>¥114<\/b>，人均 ¥28.50。","detail":"交通另计：免费"},"action":{"title":"到店点单，照着说","steps":["去：麦当劳武汉宝利金餐厅","麦辣鸡翅 ×4 ＋ 牛肉堡单品精选 ×4","步行 19 分钟（免费）","合计 ¥114"],"foot":"到店说，或截屏给同伴"},"rel":"甜品有<b>第二份半价<\/b>——「新地」这类，两个人点两份只花一份半的钱。"}},"warnings":[],"echo":{"people":4,"form":"dinein","when":"2026-10-23 22:30","from_addr":"湖北省武汉市江汉区江汉路步行街","to_addr":"湖北省武汉市江岸区黎黄陂路","budget":0.0,"taste":"想吃麦辣鸡翅 / 有人不吃冰的冷的","rel":"同学","tired":"疲劳","weekday":"周五","pref":{"want":["麦辣鸡翅"],"avoid":["冰","冷","有人不吃冰冷"],"diet":[]}},"mode":"reserve","now":{"date":"2026-10-20","weekday":"周二","hhmm":"10:44"},"plan":{"date":"2026-10-23","weekday":"周五","hhmm":"22:30","label":"预约"},"geo":{"from":"湖北省武汉市江汉区江汉路步行街","to":"湖北省武汉市江岸区黎黄陂路"},"store":{"code":"1960073","beCode":null,"name":"麦当劳武汉宝利金餐厅","address":"花楼街198号宝利金国际广场二期四座一层１－２号，二层１－４、30-34号商铺","api_dist":23,"resv":[{"date":"2026-10-20","today":true,"reservationOptionText":"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"},{"date":"2026-10-21","today":false,"reservationOptionText":"宵夜(00:00至01:46,22:14至23:59)，早餐(07:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"}],"loc":"114.293106,30.578522","km":0.12,"walk_sec":124,"meals":{"9900005456":{"name":"麦辣鸡腿汉堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png","currentPrice":"33.5","originalPrice":"47","canWithOrder":false},"511781":{"name":"培根安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png","currentPrice":"34.5","originalPrice":"34.5","canWithOrder":false},"521906":{"name":"玫瑰红糖糍粑风味派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521906_320.png","currentPrice":"5","originalPrice":"10","discountType":"促销优惠","canWithOrder":false},"6352":{"name":"阳光橙麦炫酷","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6352_320.png","currentPrice":"13.5","originalPrice":"13.5","canWithOrder":false},"511782":{"name":"芝士安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png","currentPrice":"31.5","originalPrice":"31.5","canWithOrder":false},"2430":{"name":"【美汁源】“黄金橙橙”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"521986":{"name":"马苏里拉拉丝芝士条","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png","currentPrice":"11","originalPrice":"16","discountType":"促销优惠","canWithOrder":false},"521900":{"name":"咸蛋黄鸡腿蛋月堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521900_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900011056":{"name":"全明星双人分享餐八件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_9900011056_320.gif","currentPrice":"49.9","originalPrice":"117","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521901":{"name":"月下相思扭扭薯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521901_320.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900016078":{"name":"蘸酱麦麦脆汁鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900016076":{"name":"“我就喜欢”鸡薯双全盒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png","currentPrice":"15.9","originalPrice":"29.5","canWithOrder":false},"9900016077":{"name":"蘸酱炸鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif","currentPrice":"11.9","originalPrice":"17","canWithOrder":false},"521750":{"name":"泷盐星星麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521750_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"521871":{"name":"美禄可可雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521871_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900016075":{"name":"龙焰芝士棒鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png","currentPrice":"29.9","originalPrice":"51.5","canWithOrder":false},"9900016073":{"name":"龙焰鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png","currentPrice":"26.9","originalPrice":"48.5","canWithOrder":false},"9900005460":{"name":"麦香鱼套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png","currentPrice":"33","originalPrice":"46.5","canWithOrder":false},"9900005462":{"name":"板烧鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"3755":{"name":"纯牛奶(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png","currentPrice":"11","originalPrice":"11","canWithOrder":false},"9900005464":{"name":"双层吉士汉堡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png","currentPrice":"34","originalPrice":"47.5","canWithOrder":false},"9900004236":{"name":"人气超值四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"3757":{"name":"纯悦","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_3757_320.png","currentPrice":"7.5","originalPrice":"7.5","canWithOrder":false},"9900005466":{"name":"巨无霸三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"510041":{"name":"牛奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png","currentPrice":"19","originalPrice":"19","canWithOrder":false},"6362":{"name":"100% 苹果汁(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"521917":{"name":"泷愿成真麦旋风——大米风味","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521917_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"9900005449":{"name":"吉士汉堡包套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png","currentPrice":"26.5","originalPrice":"40","canWithOrder":false},"3010":{"name":"雪碧","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900010110":{"name":"鱼牛汉堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1106":{"name":"培根蔬萃双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"1100":{"name":"巨无霸","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"506189":{"name":"如意百宝袋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_506189_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"9900005451":{"name":"麦辣鸡翅4块套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png","currentPrice":"36.5","originalPrice":"50","canWithOrder":false},"9900005453":{"name":"麦香鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png","currentPrice":"27.5","originalPrice":"41","canWithOrder":false},"9900008746":{"name":"鸡肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900008745":{"name":"新地","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008745_320.gif","currentPrice":"13","originalPrice":"13","canWithOrder":false},"9900008747":{"name":"牛肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif","currentPrice":"14","originalPrice":"14","canWithOrder":false},"515520":{"name":"怡泉+C","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1120":{"name":"双层吉士汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"521966":{"name":"韩式烟熏芝士风味酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521966_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"9900015561":{"name":"麦咖啡冰爽一夏","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015561_320.gif","currentPrice":"9.9","originalPrice":"23","canWithOrder":false},"9900016096":{"name":"蘸酱韩式甜辣酱鸡块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016096_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900008751":{"name":"可乐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900006332":{"name":"薄皮V翅双拼十翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900006332_320.png","currentPrice":"49.9","originalPrice":"74.5","canWithOrder":false},"9900008752":{"name":"派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif","currentPrice":"8.5","originalPrice":"8.5","canWithOrder":false},"9900008754":{"name":"经典麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008754_320.gif","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"9900005468":{"name":"培根蔬萃双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png","currentPrice":"36","originalPrice":"49.5","canWithOrder":false},"9900006957":{"name":"安格斯厚牛堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015704":{"name":"厚薯泥培根肉酱双牛堡买一送一","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015704_320.gif","currentPrice":"28.9","originalPrice":"28.9","canWithOrder":false},"521737":{"name":"厚薯泥培根肉酱双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521737_320.png","currentPrice":"30","originalPrice":"30","canWithOrder":false},"1401":{"name":"麦乐鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900016082":{"name":"心形薯饼5块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"1406":{"name":"板烧鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900005413":{"name":"双层深海鳕鱼堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png","currentPrice":"35","originalPrice":"48.5","canWithOrder":false},"514851":{"name":"咖啡阿芙佳朵","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_514851_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900016309":{"name":"龙焰鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015730":{"name":"BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif","currentPrice":"40.3","originalPrice":"53.5","canWithOrder":false},"9900016311":{"name":"龙焰美味四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900016310":{"name":"龙焰芝士棒鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png","currentPrice":"32","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521791":{"name":"茉莉奶绿雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521791_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"521156":{"name":"那么大鸡排（椒盐风味）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900004835":{"name":"麦乐鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png","currentPrice":"25","originalPrice":"38.5","canWithOrder":false},"4648":{"name":"不素之霸双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_4648_320.png","currentPrice":"26.5","originalPrice":"26.5","canWithOrder":false},"9900005421":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_9900005421_320_1745810420363.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900003586":{"name":"双层深海鳕鱼堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900005422":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240828/product/MS_9900005422_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900000890":{"name":"板烧鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521717":{"name":"椰奶雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521717_320.gif","currentPrice":"9.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900015729":{"name":"蘸酱BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif","currentPrice":"43.3","originalPrice":"56.5","canWithOrder":false},"9900013304":{"name":"人气经典随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png","currentPrice":"14.9","originalPrice":"14.9","canWithOrder":false},"9900015726":{"name":"韩式甜辣酱鸡块8块","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260815/product/MS_9900015726_320.png","currentPrice":"19.9","originalPrice":"30","canWithOrder":false},"521951":{"name":"灰焰圆筒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900011126":{"name":"酥脆无双套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png","currentPrice":"20","originalPrice":"20","canWithOrder":false},"521952":{"name":"龙焰鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"521953":{"name":"龙焰芝士棒鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png","currentPrice":"27","originalPrice":"27","canWithOrder":false},"521799":{"name":"日式鲜磨山葵酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521799_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"9900011128":{"name":"“堡”你欢乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011128_320.png","currentPrice":"28","originalPrice":"42.5","canWithOrder":false},"521316":{"name":"高达吉士双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900011121":{"name":"“苹”水相“鱼”套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011121_320.png","currentPrice":"36","originalPrice":"52.5","canWithOrder":false},"9900015568":{"name":"精选超值随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png","currentPrice":"13.9","originalPrice":"13.9","canWithOrder":false},"9900011123":{"name":"“辣”么快乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png","currentPrice":"24","originalPrice":"36","canWithOrder":false},"9900015850":{"name":"咸蛋黄鸡腿蛋月堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015850_320.png","currentPrice":"26.9","originalPrice":"49.5","canWithOrder":false},"1700":{"name":"麦辣鸡翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"9900015450":{"name":"厚薯泥培根肉酱双牛堡两件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260729/product/MS_9900015450_320.gif","currentPrice":"25.9","originalPrice":"40","canWithOrder":false},"9900000888":{"name":"巨无霸四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000886":{"name":"不素之霸双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000886_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000885":{"name":"培根蔬萃双层牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000885_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"4810":{"name":"薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"510479":{"name":"燕麦奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G510481_320.png","currentPrice":"9.9","originalPrice":"23","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000882":{"name":"芝士安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005411":{"name":"不素之霸双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005411_320.png","currentPrice":"37.5","originalPrice":"51","canWithOrder":false},"9900000881":{"name":"培根安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900004066":{"name":"堡堡随心拼（7件任选）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif","currentPrice":"72.5","originalPrice":"104","canWithOrder":false},"9900004064":{"name":"精选单人餐三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif","currentPrice":"34.5","originalPrice":"47","canWithOrder":false},"9900005439":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_9900005439_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"1440":{"name":"麦辣鸡腿汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"515280":{"name":"阳光柠檬红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515280_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900016058":{"name":"鱼排堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016058_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900016056":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016056_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900016057":{"name":"汉堡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016057_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900016055":{"name":"开心亲子双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016055_320.png","currentPrice":"59.5","originalPrice":"59.5","canWithOrder":false},"9900009242":{"name":"“苹板”支撑Pro套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009242_320.png","currentPrice":"39.5","originalPrice":"53.5","canWithOrder":false},"507389":{"name":"浓缩咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_507389_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900009245":{"name":"牛气满满套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png","currentPrice":"34.5","originalPrice":"48","canWithOrder":false},"9900000893":{"name":"双层深海鳕鱼堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515955":{"name":"浓浓燕麦黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515954_320.gif","currentPrice":"15.9","originalPrice":"23","discountType":"促销优惠","canWithOrder":false},"9900005321":{"name":"BFF四宫格小食盘双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png","currentPrice":"62.9","originalPrice":"123","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000891":{"name":"麦辣鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"515837":{"name":"圆筒冰淇淋","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515837_320.png","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900005423":{"name":"麦乐鸡开心乐园餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_9900005423_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"521817":{"name":"【美汁源】“多汁柠柠”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"6102":{"name":"苹果片","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6102_320.png","currentPrice":"7","originalPrice":"7","canWithOrder":false},"9900005428":{"name":"培根安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png","currentPrice":"45.5","originalPrice":"59","canWithOrder":false},"1450":{"name":"麦香鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"520445":{"name":"薄皮焦香V翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241202/product/MS_520445_320.png","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"520689":{"name":"鲜萃咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"507409":{"name":"麦咖啡™奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"3505":{"name":"锡兰红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png","currentPrice":"10.5","originalPrice":"10.5","canWithOrder":false},"1600":{"name":"麦香鱼","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png","currentPrice":"22","originalPrice":"22","canWithOrder":false},"507411":{"name":"麦咖啡™美式","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif","currentPrice":"11.9","originalPrice":"19","discountType":"促销优惠","canWithOrder":false},"9900003538":{"name":"学生专享饮品随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif","currentPrice":"10","originalPrice":"10","canWithOrder":false},"9900003537":{"name":"学生专享汉堡小食随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif","currentPrice":"28","originalPrice":"28","canWithOrder":false},"515949":{"name":"浓浓黑巧雪冰","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250611/product/MS_G515949_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"9900005430":{"name":"芝士安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png","currentPrice":"42.5","originalPrice":"56","canWithOrder":false},"4437":{"name":"玉米杯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"515946":{"name":"浓浓黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"9900005432":{"name":"麦麦脆汁鸡1块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false}}},"took_ms":8645,"calls":24},"C":{"ok":true,"panes":{"delivery":{"ok":true,"store":{"code":"1450579","beCode":"145057902","name":"麦当劳上海正大广场餐厅","address":"送达：上海市浦东新区富城路33号 浦东香格里拉前台","businessStartTime":"10:30","businessEndTime":"22:00"},"plans":[{"label":"快乐吃鸡双人餐 ×3","kind":"family","note":"一份够 2 人，摆一桌分着吃","items":[{"productCode":"9900012938","quantity":3}],"price":176.7,"original":181.2,"ok":true,"per":29.45,"tags":[{"t":"最便宜","k":"best"}],"items_text":"快乐吃鸡双人餐×3"},{"label":"汉堡包 ＋ 薯条 ×6","kind":"single","note":"堡 ＋ 小食，各点各的","items":[{"productCode":"901000","quantity":6},{"productCode":"501205","quantity":6}],"price":192.0,"original":200.4,"ok":true,"per":32.0,"tags":[{"t":"贵 ¥15.30","k":"gray"}],"items_text":"汉堡包×6、薯条×6"},{"label":"大堡口福四件套（双层脆鸡堡） ×6","kind":"combo","note":"堡 ＋ 小食 ＋ 饮料，一人一套","items":[{"productCode":"9900006233","quantity":6}],"price":221.4,"original":226.8,"ok":true,"per":36.9,"tags":[{"t":"贵 ¥44.70","k":"gray"}],"items_text":"大堡口福四件套（双层脆鸡堡）×6"},{"label":"大堡口福四件套（Hold不住鸡排堡） ×6","kind":"combo","note":"换一种口味，贵一点","items":[{"productCode":"9900010670","quantity":6}],"price":227.4,"original":232.8,"ok":true,"per":37.9,"tags":[{"t":"贵 ¥50.70","k":"gray"}],"items_text":"大堡口福四件套（Hold不住鸡排堡）×6"}],"best":{"label":"快乐吃鸡双人餐 ×3","kind":"family","note":"一份够 2 人，摆一桌分着吃","items":[{"productCode":"9900012938","quantity":3}],"price":176.7,"original":181.2,"ok":true,"per":29.45,"tags":[{"t":"最便宜","k":"best"}],"items_text":"快乐吃鸡双人餐×3"},"coupons":{"mine":3,"claimable":3,"at_store":["19.9元王牌炸鸡任选2","11.9元麦辣鸡腿堡"],"head":"卡包现有 3 张券，麦麦省还有 3 张可领。","detail":"其中 2 张限周一、1 张限周三，这会儿用不上。 这家店这会儿能用的：19.9元王牌炸鸡任选2、11.9元麦辣鸡腿堡。可领券领之前看不出能不能用——先领再复查，别按它算钱。"},"card":{"text":"这单用不上——不买 <b>¥176.70<\/b>，买了 <b class='no'>¥177.60<\/b>，反而多花。","worth":false,"hint":"点餐页加购的是 15 天体验卡 ¥9.90；App 会员页是月卡 ¥19，别混"},"ways":{"rows":[{"name":"步行","key":"walk","short":"步行","min":10,"legs":[{"label":"回落脚点","min":10}],"per_leg":"","cost":0.0,"cost_text":"免费","note":"免费","off":false,"warn":"","tag":"","best":false},{"name":"骑行 / 共享电瓶车","key":"bike","short":"骑行","min":5,"legs":[{"label":"回落脚点","min":5}],"per_leg":"","cost":9.0,"cost_text":"6 人 约 ¥9","note":"按 ¥1.5 / 人 / 段估","off":false,"warn":"","tag":"","best":false},{"name":"打车","key":"taxi","short":"打车","min":4,"legs":[{"label":"回落脚点","min":4}],"per_leg":"","cost":14.0,"cost_text":"¥14 / 车","note":"一车装得下就按一车算","off":false,"warn":"","tag":"最快","best":true}],"best":{"name":"打车","key":"taxi","short":"打车","min":4,"legs":[{"label":"回落脚点","min":4}],"per_leg":"","cost":14.0,"cost_text":"¥14 / 车","note":"一车装得下就按一车算","off":false,"warn":"","tag":"最快","best":true},"head":"当前地址 → <b>落脚点<\/b>（0.5 km）","note":"外送不用你跑这一段 —— 这里算的是你自己过去要花的时间和钱，方便跟堂食比"},"delivery":{"to":"富城路33号浦东香格里拉","store":"麦当劳上海正大广场餐厅","hours":"10:30-22:00","note":"这单由「麦当劳上海正大广场餐厅」外送 · 营业 10:30-22:00 · 送达时刻以下单页为准（MCP 不返回 ETA）"},"focus":"tired","verdict":{"lead":"一步不用走，送到浦东香格里拉。","lead_text":"一步不用走，送到浦东香格里拉。","price":176.7,"per":29.45,"tags":[{"t":"不用出门","k":""},{"t":"6 人 · 人均 ¥29.45","k":""}]},"close":{"main":"快乐吃鸡双人餐 ×3，<b>¥176.70<\/b>，人均 ¥29.45。","detail":"比人均预算 ¥30 省 ¥0.55 / 人　·　价格已含运费和打包费（外送按件收，封顶 ¥3）"},"action":{"title":"外卖下单，照着说","steps":["快乐吃鸡双人餐 ×3","送到 上海市浦东新区富城路33号浦东香格里拉","合计 ¥176.70"],"foot":"送达时刻以下单页为准"},"rel":null}},"warnings":[],"echo":{"people":6,"form":"delivery","when":"2026-10-22 17:00","from_addr":"上海市浦东新区滨江大道2727号","to_addr":"上海市浦东新区富城路33号","budget":30.0,"taste":"","rel":"同事","tired":"疲劳","weekday":"周四","pref":{"want":[],"avoid":[],"diet":[]}},"mode":"reserve","now":{"date":"2026-10-20","weekday":"周二","hhmm":"10:44"},"plan":{"date":"2026-10-22","weekday":"周四","hhmm":"17:00","label":"预约"},"geo":{"from":"上海市浦东新区滨江大道2727号","to":"上海市浦东新区富城路33号"},"store":{"code":"1450579","beCode":null,"name":"麦当劳上海正大广场餐厅","address":"陆家嘴西路168号5F02室商铺","api_dist":52,"resv":[{"date":"2026-10-20","today":true,"reservationOptionText":"午餐(10:14至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"},{"date":"2026-10-21","today":false,"reservationOptionText":"午餐(10:14至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"}],"loc":"121.499815,31.237146","km":0.36,"walk_sec":362,"meals":{"9900005456":{"name":"麦辣鸡腿汉堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png","currentPrice":"33.5","originalPrice":"46","canWithOrder":false},"511781":{"name":"培根安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png","currentPrice":"34.5","originalPrice":"34.5","canWithOrder":false},"6352":{"name":"阳光橙麦炫酷","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6352_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"511782":{"name":"芝士安格斯厚牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png","currentPrice":"31.5","originalPrice":"31.5","canWithOrder":false},"2430":{"name":"【美汁源】“黄金橙橙”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"521986":{"name":"马苏里拉拉丝芝士条","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png","currentPrice":"11","originalPrice":"15","discountType":"促销优惠","canWithOrder":false},"9900011056":{"name":"全明星双人分享餐八件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_9900011056_320.gif","currentPrice":"49.9","originalPrice":"114.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"507329":{"name":"麦咖啡™奶铁","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900016078":{"name":"蘸酱麦麦脆汁鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png","currentPrice":"11.9","originalPrice":"18","canWithOrder":false},"9900016076":{"name":"“我就喜欢”鸡薯双全盒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png","currentPrice":"15.9","originalPrice":"28.5","canWithOrder":false},"9900016077":{"name":"蘸酱炸鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif","currentPrice":"11.9","originalPrice":"17.5","canWithOrder":false},"9900016075":{"name":"龙焰芝士棒鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png","currentPrice":"29.9","originalPrice":"50.5","canWithOrder":false},"9900016073":{"name":"龙焰鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png","currentPrice":"26.9","originalPrice":"47.5","canWithOrder":false},"9900005460":{"name":"麦香鱼套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png","currentPrice":"33.5","originalPrice":"46","canWithOrder":false},"9900005462":{"name":"板烧鸡腿堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png","currentPrice":"34.5","originalPrice":"47","canWithOrder":false},"3755":{"name":"纯牛奶(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png","currentPrice":"10.5","originalPrice":"10.5","canWithOrder":false},"9900005464":{"name":"双层吉士汉堡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png","currentPrice":"34","originalPrice":"46.5","canWithOrder":false},"9900004236":{"name":"人气超值四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"3757":{"name":"纯悦","image":"https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_3757_320.png","currentPrice":"7.5","originalPrice":"7.5","canWithOrder":false},"9900005466":{"name":"巨无霸三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png","currentPrice":"36.5","originalPrice":"49","canWithOrder":false},"6362":{"name":"100% 苹果汁(盒装)","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"521917":{"name":"泷愿成真麦旋风——大米风味","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521917_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"9900005449":{"name":"吉士汉堡包套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png","currentPrice":"26","originalPrice":"38.5","canWithOrder":false},"3010":{"name":"雪碧","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900010110":{"name":"鱼牛汉堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1106":{"name":"培根蔬萃双层牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png","currentPrice":"24.5","originalPrice":"24.5","canWithOrder":false},"1100":{"name":"巨无霸","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png","currentPrice":"25.5","originalPrice":"25.5","canWithOrder":false},"9900005451":{"name":"麦辣鸡翅4块套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png","currentPrice":"36.5","originalPrice":"49","canWithOrder":false},"9900005453":{"name":"麦香鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png","currentPrice":"28","originalPrice":"40.5","canWithOrder":false},"507394":{"name":"牛奶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png","currentPrice":"19","originalPrice":"19","canWithOrder":false},"9900008746":{"name":"鸡肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900008745":{"name":"新地","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008745_320.gif","currentPrice":"12","originalPrice":"12","canWithOrder":false},"9900008747":{"name":"牛肉堡单品精选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif","currentPrice":"14","originalPrice":"14","canWithOrder":false},"515520":{"name":"怡泉+C","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1120":{"name":"双层吉士汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png","currentPrice":"23","originalPrice":"23","canWithOrder":false},"521966":{"name":"韩式烟熏芝士风味酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521966_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"9900008751":{"name":"可乐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900008752":{"name":"派","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif","currentPrice":"8.5","originalPrice":"8.5","canWithOrder":false},"9900008754":{"name":"经典麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008754_320.gif","currentPrice":"15.5","originalPrice":"15.5","canWithOrder":false},"9900005468":{"name":"培根蔬萃双层牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png","currentPrice":"35.5","originalPrice":"48","canWithOrder":false},"514782":{"name":"脆脆薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_514782_320_1747877523158.png","currentPrice":"16","originalPrice":"16","canWithOrder":false},"9900006957":{"name":"安格斯厚牛堡四件套随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"1401":{"name":"麦乐鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900016082":{"name":"心形薯饼5块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png","currentPrice":"14.5","originalPrice":"14.5","canWithOrder":false},"1406":{"name":"板烧鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png","currentPrice":"23.5","originalPrice":"23.5","canWithOrder":false},"9900005413":{"name":"双层深海鳕鱼堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png","currentPrice":"35","originalPrice":"47.5","canWithOrder":false},"514851":{"name":"咖啡阿芙佳朵","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_514851_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900016309":{"name":"龙焰鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015730":{"name":"BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif","currentPrice":"39.8","originalPrice":"54.5","canWithOrder":false},"9900016311":{"name":"龙焰美味四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif","currentPrice":"29","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900016310":{"name":"龙焰芝士棒鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png","currentPrice":"32","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"507369":{"name":"麦咖啡™美式","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif","currentPrice":"23","originalPrice":"23","canWithOrder":false},"521156":{"name":"那么大鸡排（椒盐风味）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png","currentPrice":"14","originalPrice":"14","canWithOrder":false},"9900004835":{"name":"麦乐鸡套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png","currentPrice":"25","originalPrice":"37.5","canWithOrder":false},"9900003586":{"name":"双层深海鳕鱼堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900000890":{"name":"板烧鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900015729":{"name":"蘸酱BFF四宫格小食盘","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif","currentPrice":"42.8","originalPrice":"57.5","canWithOrder":false},"521950":{"name":"蓝莓爆爆珠麦旋风","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521950_320.gif","currentPrice":"16.5","originalPrice":"16.5","canWithOrder":false},"9900013304":{"name":"人气经典随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png","currentPrice":"14.9","originalPrice":"14.9","canWithOrder":false},"521797":{"name":"北美招牌牧场酱","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_521797_320.png","currentPrice":"3","originalPrice":"3","canWithOrder":false},"521951":{"name":"灰焰圆筒","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif","currentPrice":"5","originalPrice":"5","canWithOrder":false},"9900011126":{"name":"酥脆无双套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png","currentPrice":"20","originalPrice":"20","canWithOrder":false},"521952":{"name":"龙焰鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png","currentPrice":"24","originalPrice":"24","canWithOrder":false},"9900015602":{"name":"大堡口福三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015602_320.png","currentPrice":"22.9","originalPrice":"47","canWithOrder":false},"521953":{"name":"龙焰芝士棒鸡腿堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png","currentPrice":"27","originalPrice":"27","canWithOrder":false},"9900011128":{"name":"“堡”你欢乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011128_320.png","currentPrice":"28","originalPrice":"42.5","canWithOrder":false},"521316":{"name":"高达吉士双牛堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900011121":{"name":"“苹”水相“鱼”套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011121_320.png","currentPrice":"36","originalPrice":"54","canWithOrder":false},"9900015568":{"name":"精选超值随心配","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png","currentPrice":"13.9","originalPrice":"13.9","canWithOrder":false},"9900011123":{"name":"“辣”么快乐套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png","currentPrice":"24","originalPrice":"36.5","canWithOrder":false},"1700":{"name":"麦辣鸡翅","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"9900000888":{"name":"巨无霸四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"4810":{"name":"薯条","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png","currentPrice":"13.5","originalPrice":"13.5","canWithOrder":false},"9900000882":{"name":"芝士安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000881":{"name":"培根安格斯厚牛堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png","currentPrice":"37","originalPrice":"66","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900004066":{"name":"堡堡随心拼（7件任选）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif","currentPrice":"72.5","originalPrice":"101.5","canWithOrder":false},"9900004064":{"name":"精选单人餐三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif","currentPrice":"34.5","originalPrice":"46","canWithOrder":false},"1440":{"name":"麦辣鸡腿汉堡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"515280":{"name":"阳光柠檬红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515280_320.png","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"9900009242":{"name":"“苹板”支撑Pro套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009242_320.png","currentPrice":"39.5","originalPrice":"53.5","canWithOrder":false},"507389":{"name":"浓缩咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_507389_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false},"507388":{"name":"卡布奇诺","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G507388_320.png","currentPrice":"25","originalPrice":"25","canWithOrder":false},"9900009245":{"name":"牛气满满套餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png","currentPrice":"35","originalPrice":"47.5","canWithOrder":false},"9900000893":{"name":"双层深海鳕鱼堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png","currentPrice":"32","originalPrice":"58.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900005321":{"name":"BFF四宫格小食盘双人餐","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png","currentPrice":"62.9","originalPrice":"122.5","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"9900000891":{"name":"麦辣鸡腿堡四件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png","currentPrice":"28","originalPrice":"57","discountType":"随单购麦金卡优惠","withOrder":{"membershipCode":"106","specId":"880"},"canWithOrder":true},"521817":{"name":"【美汁源】“多汁柠柠”","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png","currentPrice":"12","originalPrice":"12","canWithOrder":false},"6102":{"name":"苹果片","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6102_320.png","currentPrice":"7","originalPrice":"7","canWithOrder":false},"9900005428":{"name":"培根安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png","currentPrice":"45.5","originalPrice":"58","canWithOrder":false},"1450":{"name":"麦香鸡","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png","currentPrice":"17","originalPrice":"17","canWithOrder":false},"520689":{"name":"鲜萃咖啡","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif","currentPrice":"9.5","originalPrice":"9.5","canWithOrder":false},"3505":{"name":"锡兰红茶","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png","currentPrice":"11.5","originalPrice":"11.5","canWithOrder":false},"1600":{"name":"麦香鱼","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png","currentPrice":"22.5","originalPrice":"22.5","canWithOrder":false},"9900003538":{"name":"学生专享饮品随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif","currentPrice":"10","originalPrice":"10","canWithOrder":false},"9900003537":{"name":"学生专享汉堡小食随心选","image":"https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif","currentPrice":"27","originalPrice":"27","canWithOrder":false},"9900005430":{"name":"芝士安格斯厚牛堡三件套","image":"https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png","currentPrice":"42.5","originalPrice":"55","canWithOrder":false},"4437":{"name":"玉米杯","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png","currentPrice":"13","originalPrice":"13","canWithOrder":false},"515946":{"name":"浓浓黑巧（冰/热）","image":"https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif","currentPrice":"13.9","originalPrice":"21","discountType":"促销优惠","canWithOrder":false},"9900005432":{"name":"麦麦脆汁鸡1块","image":"https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png","currentPrice":"15","originalPrice":"15","canWithOrder":false}}},"took_ms":8130,"calls":23}};
+window.__DEMO_ECHO__ = {"A":{"people":3,"form":"undecided","when":"2026-10-24 21:15","from_addr":"浙江省杭州市滨江区飞虹路3号","to_addr":"浙江省杭州市滨江区飞虹路208号","budget":0.0,"taste":"","rel":"同学","tired":"适中","weekday":"周六","pref":{"want":[],"avoid":[],"diet":[]}},"B":{"people":4,"form":"dinein","when":"2026-10-23 22:30","from_addr":"湖北省武汉市江汉区江汉路步行街","to_addr":"湖北省武汉市江岸区黎黄陂路","budget":0.0,"taste":"想吃麦辣鸡翅 / 有人不吃冰的冷的","rel":"同学","tired":"疲劳","weekday":"周五","pref":{"want":["麦辣鸡翅"],"avoid":["冰","冷","有人不吃冰冷"],"diet":[]}},"C":{"people":6,"form":"delivery","when":"2026-10-22 17:00","from_addr":"上海市浦东新区滨江大道2727号","to_addr":"上海市浦东新区富城路33号","budget":30.0,"taste":"","rel":"同事","tired":"疲劳","weekday":"周四","pref":{"want":[],"avoid":[],"diet":[]}}};
+window.__DEMO_SID__ = 'A';
+
+/* 表单是隐藏的，只用来传参；地址簿给个空壳，别让启动逻辑报错 */
+window.demoAddresses = function(){
+  return Promise.resolve({ ok: true, addresses: [] });
+};
+
+/* 严格对条件：对不上就是没有，绝不拿 A 顶替。
+   以前是「没填偏好就给 A」—— 你填武汉 5 人，它给你泰州 3 人，
+   顶上还照你的条件写 chips，那是在骗人。 */
+window.demoPlan = function(req){
+  var echos = window.__DEMO_ECHO__, sid = null;
+  ['A', 'B', 'C'].forEach(function(k){
+    if(sid || !echos[k]) return;
+    var e = echos[k];
+    var same = String(e.people) === String(req.people)
+      && String(e.when || '') === String(req.when || '')
+      && String(e.form || '') === String(req.form || '')
+      && String(e.taste || '') === String(req.taste || '')
+      && String(e.from_addr || '') === String(req.from_addr || '')
+      && String(e.to_addr || '') === String(req.to_addr || '')
+      && String(e.budget ? Math.round(e.budget) : '') === String(req.budget || '');
+    if(same) sid = k;
+  });
+  if(sid) window.__DEMO_SID__ = sid;
+  syncOn(sid);
+  return new Promise(function(res, rej){
+    setTimeout(function(){
+      if(sid && window.__DEMO_SNAP__[sid]) res(window.__DEMO_SNAP__[sid]);
+      else rej('演示版只有 3 份跑好的结果（场景 A/B/C），不会拿别的条件凑一份给你。点「← 换场景」回上一屏挑一张卡就看得到。想算你自己的地址和时间：按 README 本地运行。');
+    }, 420);
+  });
+};
+
+/* 按钮高亮跟着实际回放的那份走 */
+function syncOn(sid){
+  document.querySelectorAll('.demo-sc a').forEach(function(a){
+    a.classList.toggle('on', a.getAttribute('data-sid') === sid);
+  });
+  var t = document.getElementById('demoMini');
+  if(t) t.innerHTML = sid
+    ? ('演示模式 · <b>场景 ' + sid + '</b> 的真实快照回放，未实时查价')
+    : '演示模式 · 认不出这组条件，下面不是有效结果';
+}
+
+/* 把某个场景的条件填进（隐藏的）表单，再走原来的提交流程 */
+function fillScene(sid){
+  var e = window.__DEMO_ECHO__[sid];
+  if(!e || !window.state) return false;
+  var set = function(id, v){ var el = document.getElementById(id); if(el) el.value = v == null ? '' : v; };
+  set('addr', e.from_addr);
+  set('drop', e.to_addr);
+  set('when', e.when);
+  set('taste', e.taste);
+  set('budget', e.budget ? String(Math.round(e.budget)) : '');
+  window.state.people = e.people;
+  window.state.form = e.form;
+  var num = document.getElementById('num');
+  if(num) num.textContent = e.people;
+  document.querySelectorAll('#segForm .seg').forEach(function(b){
+    b.classList.toggle('on', b.dataset.val === e.form);
+  });
+  if(window.updWhen) window.updWhen();
+  if(window.updateRelState) window.updateRelState();
+  return true;
+}
+
+function goScene(sid){
+  if(!fillScene(sid)) return;
+  /* URL 同步一下，方便单独分享某一个场景 */
+  try{
+    var e = window.__DEMO_ECHO__[sid];
+    var p = new URLSearchParams({from:e.from_addr||'', to:e.to_addr||'', when:e.when||'',
+      people:e.people||3, form:e.form||'dinein', taste:e.taste||'', s:sid});
+    history.replaceState(null, '', '?' + p.toString());
+  }catch(err){}
+  document.getElementById('form').dispatchEvent(new Event('submit', {cancelable:true}));
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.demo-sc a').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      if(ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return; // 新窗口照常
+      ev.preventDefault();
+      goScene(a.getAttribute('data-sid'));
+    });
+  });
+  /* 深链直接进来（?s=B&go=1）：把卡片高亮对上 */
+  var q = new URLSearchParams(location.search);
+  syncOn(q.get('s') || 'A');
+});
+</script>
+<script>
+/* ==========================================================================
+   状态
+   ========================================================================== */
+var state = {
+  form: 'dinein', people: 3, rel: '', tired: '适中',
+  budget: '', taste: '', wk: '', hhmm: '', drop: '', addr: '',
+  data: null, pane: 'dinein'
+};
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function money(v){
+  if(v == null) return '—';
+  return (Math.abs(v - Math.round(v)) < 0.004) ? ('¥' + Math.round(v)) : ('¥' + v.toFixed(2));
+}
+/* 摘要条里的地址：先剥省市区，再按字数截 —— 直接 slice(0,12) 会截成「富城路33」，看着像没打完 */
+function shortAddr(s){
+  var t = String(s || '').replace(/\s+/g, '')
+    .replace(/^.*?(省|自治区|特别行政区)/, '')
+    .replace(/^.*?市/, '')
+    .replace(/^.*?(区|县|旗)/, '');
+  return t.length > 14 ? t.slice(0, 14) + '…' : t;
+}
+
+/* 数据入口都走这两个函数。本地跑是真请求；
+   演示版（GitHub Pages）由注入脚本接管，返回同结构的真实运行快照。 */
+function apiAddresses(){
+  if(window.__DEMO__ && window.demoAddresses) return window.demoAddresses();
+  return fetch('/api/addresses').then(function(r){ return r.json(); });
+}
+function planFetch(req){
+  if(window.__DEMO__ && window.demoPlan) return window.demoPlan(req);
+  return fetch('/api/plan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req)
+  }).then(function(r){ return r.json(); });
+}
+
+/* ==========================================================================
+   第一屏交互
+   ========================================================================== */
+function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+$('whenNow').addEventListener('click', function(){
+  var d = new Date();
+  $('when').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+                  + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  updWhen();
+});
+
+function updWhen(){
+  var v = $('when').value.trim();
+  var el = $('whenCal');
+  var m = v.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+  if(!m){ el.textContent = v ? '· 缺日期，写成 2026-10-19 21:30' : ''; state.wk = ''; return; }
+  var d = new Date(+m[1], +m[2] - 1, +m[3]);
+  var t = v.match(/(\d{1,2}:\d{2})/);
+  state.wk = '周' + '日一二三四五六'.charAt(d.getDay());
+  state.hhmm = t ? t[1] : '';
+  el.textContent = '· 自动识别 ' + state.wk + (state.hhmm ? ' ' + state.hhmm : '');
+}
+$('when').addEventListener('input', updWhen);
+
+/* 落脚点能不能送外卖 —— 在输入的时候就告诉他，别等算完才发现 */
+var _saved = null;
+function _normA(s){
+  return (s || '').replace(/\s/g, '')
+    .replace(/(放前台|到酒店|电话联系|打电话联系|打电话).*$/, '');
+}
+function _gramOf(s){
+  s = _normA(s);
+  var g = {};
+  for(var i = 0; i < s.length - 1; i++) g[s.slice(i, i + 2)] = 1;
+  return g;
+}
+function addrMatch(v){
+  if(!_saved || !_saved.length || !v) return null;
+  var gi = _gramOf(v), keys = Object.keys(gi);
+  if(!keys.length) return null;
+  var best = null, bestR = 0;
+  _saved.forEach(function(a){
+    var ga = _gramOf(a.text);
+    var n = keys.filter(function(k){ return ga[k]; }).length;
+    var r = n / keys.length;
+    if(r > bestR){ bestR = r; best = a; }
+  });
+  return bestR >= 0.5 ? best : null;
+}
+apiAddresses().then(function(j){
+  _saved = (j && j.ok && j.addresses) ? j.addresses : [];
+}).catch(function(){ _saved = []; });
+
+$('drop').addEventListener('blur', function(){
+  var v = this.value.trim();
+  if(!v || _saved === null) return;
+  if(addrMatch(v)){
+    $('dropNote').innerHTML = '对上了 App 里存的地址　·　<b>外卖能算</b>';
+  } else if(_saved.length){
+    $('dropNote').innerHTML = '<span style="color:#F0715F">App 里没这个地址，外卖这条路算不了，只出堂食。</span>' +
+      '　外送接口只认地址簿里的 addressId，不认手打的字 —— 想点外卖先去麦当劳 App 存一下。';
+  }
+});
+
+/* 从 App 读地址 */
+$('dropRead').addEventListener('click', function(){  var b = this;
+  b.textContent = '读取中…'; b.disabled = true;
+  apiAddresses().then(function(j){
+    b.textContent = '从 App 读取'; b.disabled = false;
+    if(!j.ok || !j.addresses || !j.addresses.length){
+      $('dropNote').innerHTML = '<span style="color:#F0715F">麦当劳 App 里没有存过外送地址，先去 App 加一个。</span>';
+      return;
+    }
+    var html = '点一个填进去：' + j.addresses.map(function(a, i){
+      return '<button type="button" class="mini" style="margin:6px 6px 0 0" data-ad="' + i + '">'
+        + esc(a.text.slice(0, 26)) + '</button>';
+    }).join('');
+    $('dropNote').innerHTML = html;
+    $('dropNote').querySelectorAll('[data-ad]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        $('drop').value = j.addresses[+btn.dataset.ad].text;
+        state.drop = $('drop').value;
+        $('dropNote').textContent = '已填入 · 外卖能算。要换就再点一次「从 App 读取」。';
+      });
+    });
+  }).catch(function(){
+    b.textContent = '从 App 读取'; b.disabled = false;
+    $('dropNote').textContent = '读不到地址，确认本地服务在跑、token 没过期。';
+  });
+});
+
+document.querySelectorAll('#segForm .seg').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('#segForm .seg').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    state.form = b.dataset.val;
+  });
+});
+
+document.querySelectorAll('.stepper button').forEach(function(b){
+  b.addEventListener('click', function(){
+    state.people = Math.max(1, Math.min(10, state.people + parseInt(b.dataset.step, 10)));
+    $('num').textContent = state.people;
+    updateRelState();
+  });
+});
+
+function updateRelState(){
+  var one = state.people === 1;
+  document.querySelectorAll('#rel .chip').forEach(function(c){ c.disabled = one; });
+  $('relFree').disabled = one;
+  $('relNote').textContent = one ? '1 个人没有关系可填' : '不填按各吃各的算，不会替你猜';
+  if(one){
+    document.querySelectorAll('#rel .chip').forEach(function(c){ c.classList.remove('on'); });
+    $('relFree').value = ''; state.rel = '';
+  }
+}
+document.querySelectorAll('#rel .chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    var was = c.classList.contains('on');
+    document.querySelectorAll('#rel .chip').forEach(function(x){ x.classList.remove('on'); });
+    if(!was){ c.classList.add('on'); state.rel = c.dataset.val; }
+    else { state.rel = ''; }
+  });
+});
+$('relFree').addEventListener('input', function(e){
+  if(e.target.value.trim()){
+    document.querySelectorAll('#rel .chip').forEach(function(x){ x.classList.remove('on'); });
+    state.rel = 'free:' + e.target.value.trim();
+  } else if(state.rel.indexOf('free:') === 0){ state.rel = ''; }
+});
+document.querySelectorAll('#tired .chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('#tired .chip').forEach(function(x){ x.classList.remove('on'); });
+    c.classList.add('on'); state.tired = c.dataset.val;
+  });
+});
+/* 价格预期：和下面的人物关系、疲劳度用同一套 chip 交互 —— 点一下亮，
+   再点一下取消；手输数字也能反点亮对应的那个。 */
+function syncBudget(){
+  var v = ($('budget').value || '').trim();
+  document.querySelectorAll('.quick button').forEach(function(b){
+    b.classList.toggle('on', (b.dataset.budget || '') === v);
+  });
+}
+document.querySelectorAll('.quick button').forEach(function(b){
+  b.addEventListener('click', function(){
+    var was = b.classList.contains('on');
+    document.querySelectorAll('.quick button').forEach(function(x){ x.classList.remove('on'); });
+    if(was){ $('budget').value = ''; }
+    else { $('budget').value = b.dataset.budget; b.classList.add('on'); }
+  });
+});
+$('budget').addEventListener('input', syncBudget);
+syncBudget();
+
+/* 一开始填就把红边撤掉，别让框一直挂着错误态 */
+['addr', 'drop', 'when'].forEach(function(id){
+  $(id).addEventListener('input', function(){ $(id).classList.remove('err'); });
+});
+
+/* ==========================================================================
+   提交 → 计算 → 渲染
+   ========================================================================== */
+var TIPS = [
+  '正在找最近的麦当劳…',
+  '在比套餐和单品哪个划算…',
+  '逐个试真实价格…',
+  '算走、骑、坐车分别要多久…',
+  '对一遍券能不能用…',
+  '快好了，正在收口…'
+];
+
+$('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  updWhen();
+
+  var req = {
+    from_addr: $('addr').value.trim(),
+    to_addr: $('drop').value.trim(),
+    when: $('when').value.trim(),
+    people: state.people,
+    form: state.form,
+    taste: $('taste').value.trim(),
+    budget: $('budget').value.trim(),
+    rel: state.rel,
+    tired: state.tired
+  };
+  /* 必填校验：一次说清缺哪几项、能点、滚到第一个、框加红边。
+     陌生人第一下就点提交是常态，不能只让光标悄悄跳一下。 */
+  var miss = [];
+  if(!req.from_addr) miss.push(['addr', '当前地址']);
+  if(!req.to_addr) miss.push(['drop', '落脚点地址']);
+  if(!req.when) miss.push(['when', '散场时间']);
+  ['addr', 'drop', 'when'].forEach(function(id){ $(id).classList.remove('err'); });
+
+  if(miss.length){
+    var box = $('fileErr');
+    box.hidden = false;
+    box.innerHTML = '<b>还差 ' + miss.length + ' 项，点名字直接跳过去</b>' +
+      miss.map(function(m){ return '<span data-jump="' + m[0] + '">' + m[1] + '</span>'; }).join('');
+    miss.forEach(function(m){ $(m[0]).classList.add('err'); });
+    box.querySelectorAll('[data-jump]').forEach(function(el){
+      el.addEventListener('click', function(){
+        var t = $(el.dataset.jump);
+        t.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        try{ t.focus({ preventScroll: true }); }catch(e){ t.focus(); }
+      });
+    });
+    var first = $(miss[0][0]);
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function(){
+      try{ first.focus({ preventScroll: true }); }catch(e){ first.focus(); }
+    }, 320);
+    return;
+  }
+  $('fileErr').hidden = true;
+  state.drop = req.to_addr;
+
+  $('screen-form').hidden = true;
+  $('screen-load').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  var t0 = Date.now(), ti = 0;
+  var timer = setInterval(function(){
+    $('ldNum').innerHTML = ((Date.now() - t0) / 1000).toFixed(1) + '<small>秒</small>';
+    var k = Math.min(TIPS.length - 1, Math.floor((Date.now() - t0) / 900));
+    if(k !== ti){ ti = k; $('ldTip').textContent = TIPS[k]; }
+  }, 100);
+
+  planFetch(req).then(function(j){
+    clearInterval(timer);
+    state.data = j;
+    state.req = req;
+    /* 默认显示能算出来的那一套；两套都成时先看堂食 */
+    var pp = j.panes || {};
+    state.pane = (pp.dinein && pp.dinein.ok) ? 'dinein'
+               : (pp.delivery && pp.delivery.ok) ? 'delivery'
+               : (pp.dinein ? 'dinein' : 'delivery');
+    $('screen-load').hidden = true;
+    $('screen-result').hidden = false;
+    render();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }).catch(function(err){
+    clearInterval(timer);
+    $('screen-load').hidden = true;
+    $('screen-result').hidden = false;
+    /* 算不出来就别留那张空的大卡片 —— 一张黑底金边的空卡比报错更像坏了 */
+    var vc = document.querySelector('.vcard'); if(vc) vc.hidden = true;
+    var lb = document.querySelector('.lazybar'); if(lb) lb.hidden = true;
+    $('warnbox').innerHTML = '<div class="warn"><b>演示版没有这一份</b>　' + esc(err) + '</div>';
+  });
+});
+
+$('back').addEventListener('click', function(){
+  $('screen-result').hidden = true;
+  $('screen-form').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+});
+
+/* ---------- 渲染 ---------- */
+function render(){
+  var j = state.data, req = state.req;
+  var vc = document.querySelector('.vcard'); if(vc) vc.hidden = false;
+  var lb = document.querySelector('.lazybar'); if(lb) lb.hidden = false;
+  var pans = j.panes || {};
+  var isUndecided = req.form === 'undecided';
+
+  /* 摘要条 */
+  var chips = [req.people + ' 人'];
+  if(j.echo && j.echo.weekday) chips.push(j.echo.weekday + ' ' + (req.when.split(' ')[1] || '') + ' 散场');
+  chips.push(req.form === 'dinein' ? '堂食' : req.form === 'delivery' ? '外卖' : '还没定');
+  if(req.to_addr) chips.push('→ ' + shortAddr(req.to_addr));
+  if(req.budget) chips.push('人均 ¥' + req.budget);
+  $('sumchips').innerHTML = chips.map(function(t){
+    return '<span class="sumchip">' + esc(t) + '</span>';
+  }).join('');
+
+  /* 焦点标签 + 懒人行 */
+  var bothOk = !!(isUndecided && pans.dinein && pans.dinein.ok && pans.delivery && pans.delivery.ok);
+  $('vlabel').textContent = bothOk ? '两套结论' : (isUndecided ? '先走通这一套' : '本单结论');
+  $('lazyTxt').innerHTML = bothOk
+    ? '不想看长文？<b>只读下面这两行</b>就够点单了。'
+    : '不想看长文？<b>只读下面这一句</b>就够点单了。';
+
+  /* 一句话 */
+  var v = $('verdict');
+  if(isUndecided && pans.dinein && pans.dinein.ok && pans.delivery && pans.delivery.ok){
+    var a = pans.dinein.best, b = pans.delivery.best;
+    var diff = b.price - a.price;
+    v.innerHTML =
+      '<p class="vlead">同一顿饭，人均差 <span class="dgap">' + money(diff / req.people) + '</span>' +
+        ' —— 换的是「多跑一趟」还是「多花这钱」。</p>' +
+      '<div class="vrow"><div class="k">堂食</div>' +
+        '<div class="v">' + pans.dinein.verdict.lead + '</div>' +
+        '<div class="vp">' + money(a.per) + '<small>/人</small></div></div>' +
+      '<div class="vrow"><div class="k">外卖</div>' +
+        '<div class="v">' + pans.delivery.verdict.lead + '</div>' +
+        '<div class="vp">' + money(b.per) + '<small>/人</small></div></div>' +
+      '<div class="vs" style="margin-top:16px">两套都算好了，点上面的按钮切，随时能换回来。</div>';
+  } else if(pans[state.pane] && pans[state.pane].ok){
+    var pd = pans[state.pane];
+    v.innerHTML =
+      '<p class="vt">' + pd.verdict.lead + '</p>' +
+      '<div class="vmeta"><span class="vprice">' + money(pd.verdict.price) + '</span>' +
+        '<span class="vper">' + req.people + ' 人 · <b>人均 ' + money(pd.verdict.per) + '</b></span></div>' +
+      '<div class="vtags">' + (pd.verdict.tags || []).map(function(t){
+        return '<span class="' + (t.k || '') + '">' + esc(t.t) + '</span>';
+      }).join('') + '</div>';
+  } else {
+    var err = (pans[state.pane] || {}).error || (j.warnings || [])[0] || '没算出可行方案。';
+    v.innerHTML = '<p class="vt">这次没算出来。</p><div class="vs">' + esc(err) + '</div>';
+  }
+
+  /* 「还没定」但只走通一套时，把另一套为什么走不通说出来。
+     不显示就等于默认只剩一套 —— 用户明明问的是两条路。 */
+  if(isUndecided && !bothOk){
+    var liveKey = (pans.dinein && pans.dinein.ok) ? 'dinein'
+                : (pans.delivery && pans.delivery.ok) ? 'delivery' : null;
+    var deadKey = liveKey === 'dinein' ? 'delivery' : liveKey === 'delivery' ? 'dinein' : null;
+    var dead = deadKey ? pans[deadKey] : null;
+    if(dead && !dead.ok){
+      var deadName = deadKey === 'delivery' ? '外卖' : '堂食';
+      var ads = (dead.addresses && dead.addresses.length)
+        ? '<i>你现在存过的是：' + dead.addresses.map(function(x){ return esc(x.trim()); }).join('　·　') + '</i>'
+        : '';
+      v.innerHTML += '<div class="deadline"><b>' + deadName + '这条这会儿走不通</b>' +
+        '<span>' + esc(dead.error || '没算出可行方案。') + '</span>' + ads +
+        '<i>所以上面只给了一套。想比两套，先把这条路打通再看。</i></div>';
+    }
+  }
+
+  /* 切换器：只有「还没定」出现，且两套都成 */
+  var sw = $('switch');
+  if(isUndecided && pans.dinein && pans.delivery && pans.dinein.ok && pans.delivery.ok){
+    sw.hidden = false;
+    sw.innerHTML =
+      '<button data-pane="dinein" class="' + (state.pane === 'dinein' ? 'on' : '') + '">堂食' +
+        '<span class="sp">合计 ' + money(pans.dinein.best.price) + '</span></button>' +
+      '<button data-pane="delivery" class="' + (state.pane === 'delivery' ? 'on' : '') + '">外卖' +
+        '<span class="sp">合计 ' + money(pans.delivery.best.price) + '</span></button>';
+    sw.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){
+        state.pane = b.dataset.pane;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  } else { sw.hidden = true; sw.innerHTML = ''; }
+
+  /* 全局提醒 */
+  var wb = [];
+  (j.warnings || []).forEach(function(w){ wb.push(w); });
+  $('warnbox').innerHTML = wb.length
+    ? '<div class="warn">' + wb.map(function(w){ return '<b>注意</b>　' + esc(w); }).join('<br>') + '</div>'
+    : '';
+
+  /* 面板 */
+  var showPane = isUndecided ? state.pane : (pans.dinein && pans.dinein.ok ? 'dinein' : 'delivery');
+  $('pane-dinein').hidden = showPane !== 'dinein';
+  $('pane-delivery').hidden = showPane !== 'delivery';
+  $('pane-dinein').innerHTML = pans.dinein ? paneHTML('dinein', pans.dinein, req) : '';
+  $('pane-delivery').innerHTML = pans.delivery ? paneHTML('delivery', pans.delivery, req) : '';
+
+  /* 脚注：把耗时打出来 */
+  $('foot').innerHTML =
+    '<b>这套数从哪来</b>：门店、套餐、价格来自麦当劳 MCP 实时试价；距离、耗时、打车价来自高德。<br>' +
+    '<b>只读</b>：不下单、不领券、不建地址。到手温度这类按常识判断，不是接口数据。<br>' +
+    '本次计算 <span class="met">' + ((j.took_ms || 0) / 1000).toFixed(1) + ' 秒</span>' +
+    (j.calls ? '　·　麦当劳接口 <span class="met">' + j.calls + ' 次</span>' : '') +
+    (j.now ? '　·　参照时间 ' + esc(j.now.date + ' ' + j.now.hhmm + ' ' + j.now.weekday) : '');
+}
+
+function prefBarHTML(rep, kind){
+  var h = '';
+  var hit = rep.hit || [], miss = rep.missing || [], avoidIn = rep.avoid_in || [];
+  if(hit.length){
+    h += '<div class="pf ok"><b>有' + esc(hit.join('、')) + '</b>' +
+         '<span>' + (kind === 'dinein' ? '下面是含这个的买法' : '会跟这单一起送到') + '</span></div>';
+  }
+  if(miss.length){
+    var why = rep.later ? '换个时段才有' : '这会儿的菜单里没有';
+    h += '<div class="pf miss"><b>没有' + esc(miss.join('、')) + '</b>' +
+         '<span>' + why + '　·　下面是没有这口的兜底</span></div>';
+  }
+  if(avoidIn.length){
+    h += '<div class="pf warn"><b>' + (rep.all_avoid ? '每个方案都含' : '有方案含') +
+         '「' + esc(avoidIn.join('、')) + '」</b>' +
+         '<span>自己挑一个能接受的，或者点左上角「改条件」回去改</span></div>';
+  }
+  return h ? '<div class="prefwrap">' + h + '</div>' : '';
+}
+
+function paneHTML(kind, p, req){
+  if(!p.ok){
+    return '<div class="block"><div class="warn"><b>这套算不出</b>　' + esc(p.error || '未知原因') +
+      (p.addresses && p.addresses.length
+        ? '<br><br>账号里现有的地址：<br>' + p.addresses.map(function(a){ return '· ' + esc(a); }).join('<br>')
+        : '') + '</div></div>';
+  }
+
+  var h = '';
+
+  /* 01 券 */
+  h += '<div class="block"><div class="bh"><span class="idx">01</span><span class="bt">券</span>' +
+       '<span class="bj">' + (p.coupons.at_store.length ? p.coupons.at_store.length + ' 张可用' : '本单 0 张可用') +
+       '</span></div>' +
+       '<div class="coupon"><div class="ci">券</div><div class="ct">' +
+       esc(p.coupons.head) + '<br><span class="dim">' + esc(p.coupons.detail) + '</span></div></div></div>';
+
+  /* 偏好兑现情况：放在买法表正上方 —— 它决定这张表怎么读 */
+  if(p.pref && !p.pref.empty){
+    h += prefBarHTML(p.pref, kind);
+  }
+
+  /* 02 买法比价 */
+  h += '<div class="block"><div class="bh"><span class="idx">02</span><span class="bt">买法比价</span>' +
+       '<span class="bj">' + (kind === 'dinein' ? '到店价' : '外送价') + ' · ' + req.people + ' 人</span></div>' +
+       '<table class="tbl"><thead><tr><th>买法</th><th class="r">合计</th><th class="tg">优点</th></tr></thead><tbody>';
+  p.plans.forEach(function(pl){
+    h += '<tr><td class="nm">' + esc(pl.label) +
+         '<span class="sub2">' + esc(pl.note) + '</span></td>' +
+         '<td class="pr">' + money(pl.price) + '<span class="pp">人均 ' + money(pl.per) + '</span></td>' +
+         '<td class="tg">' + (pl.tags || []).map(function(t){
+            return '<span class="tag ' + tagCls(t.k) + '">' + esc(t.t) + '</span>';
+         }).join('') + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  /* 03 交通 / 送到哪 */
+  if(kind === 'dinein'){
+    h += '<div class="block"><div class="bh"><span class="idx">03</span><span class="bt">怎么去</span>' +
+         '<span class="bj">' + esc(p.store.name.replace('麦当劳', '')) + '</span></div>';
+    h += '<div class="ways"><div class="whead">' + p.ways.head + '</div>';
+    (p.ways.rows || []).forEach(function(r){
+      h += '<div class="wrow' + (r.best ? ' best' : '') + '">' +
+           '<div class="wn">' + esc(r.name) +
+             (r.tag ? '<span class="tag t-best">' + esc(r.tag) + '</span>' : '') +
+             (r.per_leg ? '<small>' + esc(r.per_leg) + '</small>' : '') +
+           '</div>' +
+           '<div class="wt">' + r.min + ' 分</div>' +
+           '<div class="wc">' + esc(r.cost_text) + '</div></div>';
+    });
+    h += '</div><div class="waynote">' + p.ways.note + '</div></div>';
+  } else {
+    var wb2 = p.ways && p.ways.best;
+    h += '<div class="block"><div class="bh"><span class="idx">03</span><span class="bt">送到哪</span>' +
+         '<span class="bj">含运费 · 打包费</span></div>' +
+         '<div class="transit">' +
+         '<div class="tcard"><div class="tt">送到</div><div class="tv">' +
+           esc(p.delivery.to || '落脚点') + '</div><div class="td">' + esc(p.delivery.note) + '</div></div>' +
+         '<div class="tcard"><div class="tt">你自己过去</div><div class="tv">' +
+           (wb2 ? wb2.min + ' 分<small>' + esc(wb2.cost_text) + '</small>' : '—') +
+           '</div><div class="td">点外卖就不用跑；这段是给堂食做对照的</div></div>' +
+         '</div>';
+    if(p.ways && p.ways.rows && p.ways.rows.length){
+      h += '<div class="ways" style="margin-top:16px"><div class="whead">' + p.ways.head + '</div>';
+      p.ways.rows.forEach(function(r){
+        h += '<div class="wrow' + (r.best ? ' best' : '') + '">' +
+             '<div class="wn">' + esc(r.name) +
+               (r.tag ? '<span class="tag t-best">' + esc(r.tag) + '</span>' : '') +
+               (r.per_leg ? '<small>' + esc(r.per_leg) + '</small>' : '') +
+             '</div><div class="wt">' + r.min + ' 分</div>' +
+             '<div class="wc">' + esc(r.cost_text) + '</div></div>';
+      });
+      h += '</div><div class="waynote">' + p.ways.note + '</div></div>';
+    } else { h += '</div>'; }
+  }
+
+  /* 收口 */
+  h += '<div class="close"><div class="cl">收口</div><div class="cm">' + p.close.main + '</div>' +
+       '<div class="cd">' + esc(p.close.detail) + '</div>';
+  if(p.card){
+    h += '<div class="member">💳 <b>麦金卡</b>：' + p.card.text +
+         (p.card.hint ? '<br><span style="color:#5E5E64">（' + esc(p.card.hint) + '）</span>' : '') + '</div>';
+  }
+  h += '</div>';
+
+  /* 行动卡 */
+  h += '<div class="card"><div class="ch">🍔 ' + esc(p.action.title) + '</div><ol>' +
+       p.action.steps.map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('') +
+       '</ol><div class="cf">' + esc(p.action.foot) + '</div></div>';
+
+  /* 关系 */
+  if(p.rel){
+    h += '<div class="relation-note"><b>关系</b> · ' + p.rel + '</div>';
+  }
+  return h;
+}
+
+function tagCls(k){
+  if(k === 'best') return 't-best';
+  if(k === 'hot' || k === 'gap') return 't-hot';
+  return 't-gray';
+}
+
+/* 启动 */
+updateRelState();
+updWhen();
+var d = new Date();
+$('when').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+                + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+updWhen();
+
+/* --------------------------------------------------------------------------
+   深链预填：?from=…&to=…&people=3&form=undecided&go=1
+   用来分享一次查询，也方便自动化截图；不填任何参数就跟平时一样。
+   -------------------------------------------------------------------------- */
+(function(){
+  var q = new URLSearchParams(location.search);
+  if(!q.toString()) return;
+  if(q.get('from')) $('addr').value = q.get('from');
+  if(q.get('to'))   $('drop').value = q.get('to');
+  if(q.get('when')) $('when').value = q.get('when');
+  if(q.get('taste'))$('taste').value = q.get('taste');
+  if(q.get('budget'))$('budget').value = q.get('budget');
+  if(q.get('people')){
+    state.people = Math.max(1, Math.min(10, parseInt(q.get('people'), 10) || 1));
+    $('num').textContent = state.people;
+    updateRelState();
+  }
+  if(q.get('form')){
+    state.form = q.get('form');
+    document.querySelectorAll('#segForm .seg').forEach(function(x){
+      x.classList.toggle('on', x.dataset.val === state.form);
+    });
+  }
+  updWhen();
+  if(q.get('go') === '1'){
+    setTimeout(function(){ $('form').dispatchEvent(new Event('submit', {cancelable:true})); }, 60);
+  }
+})();
+</script>
+</body>
+</html>

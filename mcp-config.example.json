@@ -1,0 +1,18 @@
+{
+  "_comment": "示例配置。真实 Token / Key 一律用环境变量占位符，不要写进文件、不要提交到仓库。",
+  "_where": "存到 ~/.workbuddy/mcp.json；也可以不配这个文件，直接 export 环境变量后跑 app/server.py。",
+  "mcpServers": {
+    "mcd-mcp": {
+      "type": "streamablehttp",
+      "url": "https://mcp.mcd.cn",
+      "headers": {
+        "Authorization": "${MCD_MCP_TOKEN}"
+      }
+    },
+    "amap-mcp": {
+      "type": "streamablehttp",
+      "url": "https://mcp.amap.com/mcp?key=${AMAP_KEY}",
+      "_optional": "高德可选。不配就只能算价格和门店，交通那一段会跳过。"
+    }
+  }
+}

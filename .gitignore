@@ -1,0 +1,21 @@
+# 凭证：任何情况下都不进仓库
+mcp.json
+.env
+*.key
+*.pem
+**/amap.key
+
+# 运行产物
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+
+# 历史原型（保留在本地，不参赛）
+archive/
+AfterM-demo*.html
+AfterM-flow.html
+AfterM-app-mockup.html
+
+# 本地工作区（含项目内部笔记，不进公开仓库）
+.workbuddy/
