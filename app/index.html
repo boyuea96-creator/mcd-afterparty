@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="website">
+<meta property="og:title" content="麦麦散场局 AfterM｜散场后一群人怎么吃麦当劳">
+<meta property="og:description" content="填五个空，堂食和外卖两套账都算清，只给一句结论。三个真实案例在线可看，不用注册、不用 Token。">
+<meta property="og:image" content="https://boyuea96-creator.github.io/mcd-afterparty/og.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:url" content="https://boyuea96-creator.github.io/mcd-afterparty/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0A0A0B">
 <title>AfterM · 麦麦散场局</title>
 <style>
 :root{
@@ -335,6 +344,15 @@ input{font:inherit;color:inherit;background:none;border:0;outline:0}
   .seg small{display:none}
   .wrow{grid-template-columns:1fr 52px 78px;gap:10px}
 }
+
+/* 页脚：不是麦当劳官方项目，也给看完的人一条去 GitHub 的路 */
+.ghfoot{max-width:760px;margin:6px auto 0;padding:0 30px 46px;
+  display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+  font-size:12px;line-height:1.7;color:#5E5E66}
+.ghfoot a{color:#FFC72C;text-decoration:none;border-bottom:1px solid rgba(255,199,44,.3);
+  padding-bottom:1px;transition:.15s}
+.ghfoot a:hover{border-bottom-color:#FFC72C}
+@media(max-width:640px){.ghfoot{padding:0 20px 40px}}
 </style>
 </head>
 <body>
@@ -1077,5 +1095,10 @@ updWhen();
   }
 })();
 </script>
+
+<div class="ghfoot">
+  <span>个人参赛作品，非麦当劳官方项目</span>
+  <a href="https://github.com/boyuea96-creator/mcd-afterparty" target="_blank" rel="noopener">在 GitHub 看源码 · 点个 ★</a>
+</div>
 </body>
 </html>
